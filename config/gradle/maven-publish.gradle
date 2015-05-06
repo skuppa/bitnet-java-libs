@@ -1,0 +1,59 @@
+apply plugin: 'maven-publish'
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+    baseName "bitnet-java-${project.name}"
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+    baseName "bitnet-java-${project.name}"
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "bitnet"
+            name "Bitnet"
+            email "support@bitnet.io"
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId 'io.bitnet'
+            artifactId "bitnet-java-${project.name}"
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom.withXml {
+                def root = asNode()
+
+                root.dependencies.'*'.findAll() {
+                    it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+                        dep.name == it.artifactId.text() || "bitnet-java-${dep.name}" == it.artifactId.text()
+                    }
+                }.each { it.scope*.value = 'compile'}
+
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}

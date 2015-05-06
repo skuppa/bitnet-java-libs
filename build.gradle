@@ -1,0 +1,67 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'net.researchgate:gradle-release:2.0.2'
+    }
+}
+
+apply plugin: 'net.researchgate.release'
+apply from: 'config/gradle/raml-check.gradle'
+
+subprojects {
+    buildscript {
+        repositories {
+            mavenCentral()
+            jcenter()
+        }
+
+        dependencies {
+            classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
+            classpath 'net.researchgate:gradle-release:2.0.2'
+        }
+    }
+
+    apply plugin: 'java'
+    apply plugin: 'project-report'
+
+
+    apply from: '../config/gradle/static-analysis.gradle'
+    apply from: '../config/gradle/maven-publish.gradle'
+
+    group = 'io.bitnet'
+
+    repositories {
+        mavenCentral()
+    }
+
+    test {
+        reports.html.enabled = false
+    }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = 1.7
+        targetCompatibility = 1.7
+    }
+
+    tasks.withType(Jar) {
+        baseName "bitnet-java-${project.name}"
+    }
+
+    jar {
+        manifest {
+            attributes("Implementation-Title": "bitnet-java-${project.name}",
+                       "Implementation-Version": version)
+        }
+    }
+}
+
+updateVersion.dependsOn ':client:bintrayUpload'
+updateVersion.dependsOn ':sdk:bintrayUpload'
+checkCommitNeeded.dependsOn 'checkRAMLBuild'
+
+
+

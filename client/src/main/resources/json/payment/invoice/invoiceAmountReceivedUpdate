@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "invoiceAmountPaidUpdate",
+    "type": "object",
+    "description": "Update a single Invoice's amount received",
+    "properties": {
+        "amountReceived": {
+            "$ref": "invoiceBase#/definitions/amountReceived"
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "amountReceived" ]
+}

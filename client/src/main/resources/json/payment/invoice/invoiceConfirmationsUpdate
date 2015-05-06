@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "invoiceConfirmationsUpdate",
+    "type": "object",
+    "description": "Update a single Invoice",
+    "properties": {
+        "confirmations": {
+            "$ref": "invoiceBase#/definitions/confirmations"
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "confirmations" ]
+}

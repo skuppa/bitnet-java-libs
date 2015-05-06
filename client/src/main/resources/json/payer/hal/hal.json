@@ -1,0 +1,14 @@
+{
+    "description": "HAL properties types that are required by more than one schemas",
+    "definitions": {
+        "href": {
+            "type": "string",
+            "pattern": "^(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?$"
+        },
+        "correlationId": {
+            "description": "Correlation Id associated with this request",
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+        }
+    }
+}

@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "order",
+    "type": "object",
+    "description": "Create single Order",
+    "properties": {
+        "accountId": {
+            "$ref": "orderBase#/definitions/accountId"
+        },
+        "reference": {
+            "$ref": "orderBase#/definitions/reference"
+        },
+        "integrationId": {
+            "$ref": "orderBase#/definitions/integrationId"
+        },
+        "desc": {
+            "$ref": "orderBase#/definitions/desc"
+        },
+        "currency": {
+            "$ref": "orderBase#/definitions/currency"
+        },
+        "amount": {
+            "$ref": "orderBase#/definitions/amount"
+        },
+        "taxAmount": {
+            "$ref": "orderBase#/definitions/taxAmount"
+        },
+        "shippingAmount": {
+            "$ref": "orderBase#/definitions/shippingAmount"
+        },
+        "totalAmount": {
+            "$ref": "orderBase#/definitions/totalAmount"
+        },
+        "payerId": {
+            "$ref": "orderBase#/definitions/payerId"
+        },
+        "channelIdentifier": {
+            "$ref": "orderBase#/definitions/channelIdentifier"
+        },
+        "items": {
+            "$ref": "orderBase#/definitions/items"
+        },
+        "shipping": {
+            "$ref": "orderBase#/definitions/shipping"
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "accountId", "currency", "totalAmount", "payerId" ]
+}

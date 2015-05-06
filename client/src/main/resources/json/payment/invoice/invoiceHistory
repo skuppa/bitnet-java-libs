@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "invoiceHistory",
+    "type": "object",
+    "description": "A single entry of a Invoice's history",
+    "properties": {
+        "id": {
+            "description" : "Unique identifier for the Invoice history entry",
+            "$ref": "invoiceBase#/definitions/id"
+        },
+        "invoiceId": {
+            "description" : "Unique identifier for the Invoice the history entry is for",
+            "$ref": "invoiceBase#/definitions/id"
+        },
+        "state": {
+            "description" : "The state of the Invoice",
+            "$ref": "invoiceBase#/definitions/state"
+        },
+        "confirmations": {
+            "description" : "The number of confirmations recorded against the Invoice",
+            "$ref": "invoiceBase#/definitions/confirmations"
+        },
+        "quoteId": {
+            "description" : "Unique identifier for the current Quote",
+            "$ref": "payTypes#/definitions/UUID"
+        },
+        "amount": {
+            "description" : "The amount owed on the Invoice",
+            "$ref": "payTypes#/definitions/cryptoCurrencyFormat"
+        },
+        "quoteExpiresAt": {
+            "description" : "The time the current Quote will expire at",
+            "$ref": "payTypes#/definitions/date"
+        },
+        "amountReceived": {
+            "description" : "The amount paid against the Invoice",
+            "$ref": "invoiceBase#/definitions/amountReceived"
+        },
+        "createdAt": {
+            "description" : "The time the history entry was created at",
+            "$ref": "invoiceBase#/definitions/createdAt"
+        }
+    },
+    "additionalProperties": true,
+    "required": [ "id", "invoiceId", "state", "amount", "amountReceived", "quoteExpiresAt", "confirmations", "createdAt" ]
+}
+
+
+

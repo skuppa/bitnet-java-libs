@@ -1,0 +1,16 @@
+{
+    "_links": {
+        "self": {
+            "href": "/payer/v1/payers"
+        },
+        "payer": {
+            "href": "/payer/v1/payers/0d04caa1-ba56-4e00-ade0-aeb8b8b5b545"
+        }
+    },
+    "correlationId": "0a9e9d43-550a-4ce4-a7f2-0a25c57a63c0",
+    "errors": [
+        {
+            "message": "Payer already exists with reference 'my-customer-001'"
+        }
+    ]
+}

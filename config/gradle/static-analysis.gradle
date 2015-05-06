@@ -1,0 +1,19 @@
+/**
+* Adds static analysis tools to build.
+*/
+
+apply plugin: 'pmd'
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+apply plugin: 'jacoco'
+
+checkstyle {
+	configFile = file('../config/checkstyle/checkstyle.xml')
+}
+
+findbugs {
+    includeFilter = file("../config/findbugs/includeFilter.xml")
+    excludeFilter = file("../config/findbugs/excludeFilter.xml")
+}
+
+

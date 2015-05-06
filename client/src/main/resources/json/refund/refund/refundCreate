@@ -1,0 +1,29 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "refund",
+    "type": "object",
+    "description": "Create a single Refund",
+    "properties": {
+        "accountId": {
+            "$ref": "refundBase#/definitions/accountId"
+        },
+        "invoiceId": {
+            "$ref": "refundBase#/definitions/invoiceId"
+        },
+        "reference": {
+            "$ref": "refundBase#/definitions/reference"
+        },
+        "instruction": {
+            "$ref": "refundBase#/definitions/instruction"
+        },
+        "currency": {
+            "$ref": "refundBase#/definitions/requestCurrency"
+        },
+        "amount": {
+            "$ref": "refundBase#/definitions/requestAmount"
+        }
+
+    },
+    "additionalProperties": false,
+    "required": [ "accountId", "invoiceId", "instruction" ]
+}

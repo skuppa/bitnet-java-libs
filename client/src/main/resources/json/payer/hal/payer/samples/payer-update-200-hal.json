@@ -1,0 +1,30 @@
+{
+    "_links": {
+        "self": {
+            "href": "/payer/v1/payers/2479a57f-2847-480e-aada-163e0fdad7cb"
+        }
+    },
+    "id": "2479a57f-2847-480e-aada-163e0fdad7cb",
+    "accountId": "ccf9117a-7261-4c42-932f-efe091876b52",
+    "reference": "b67b51b2-8553-a03a-f126-16129e0f12d6",
+    "firstName": "Steven",
+    "lastName": "King",
+    "address": {
+        "addressLine1": "Watkins House",
+        "addressLine2": "2997 Collins Avenue",
+        "city": "Westerville",
+        "postalCode": "43081",
+        "country": "US",
+        "region": "CA"
+    },
+    "email": "StevenCKing@jourrapide.com",
+    "contactNumbers": [
+        {
+            "label": "MOBILE",
+            "number": "1-614-794-5888"
+        }
+    ],
+    "refundPaymentAddress": "mm4FdvNDm173WiQosCvhqpQdThsE7vvSCp",
+    "createdAt": "2014-12-12T12:27:56.684Z",
+    "modifiedAt": "2014-12-12T13:27:56.684Z"
+}

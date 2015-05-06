@@ -1,0 +1,66 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.yaml:snakeyaml:1.15'
+    }
+}
+
+String generateToStringFromHashCodeMethod(String classContents) {
+    def hashCodeMethod = ("$classContents" =~ /(?s)\s{4}@Override\n\s{4}public int hashCode().*?\{.*?\}/)[0][0]
+    return hashCodeMethod
+            .replaceAll(/int hashCode/, "String toString")
+            .replaceAll(/toHashCode/, "toString")
+            .replaceAll(/HashCodeBuilder\(\)/, "ToStringBuilder(this)")
+            .replaceAll(/.append\((.*?)\)/, { match -> def field = match[1]; ".append(\"$field\", $field)" })
+}
+
+String addToStringImportToSource(String classContents) {
+    def hashcodeBuilderImport = "import org.apache.commons.lang3.builder.HashCodeBuilder;"
+    def toStringBuilderImport = "import org.apache.commons.lang3.builder.ToStringBuilder;"
+    return classContents
+            .replaceAll(/$hashcodeBuilderImport/, "$hashcodeBuilderImport\n$toStringBuilderImport");
+}
+
+String addToStringToSource(String classContents, String toStringMethod) {
+    return classContents
+            .replaceAll(/\}\u0024(?!.)/, "$toStringMethod\n}");
+}
+
+String maskFields(def confidentialInfoConfig, String filePath, String toStringMethod) {
+    confidentialInfoConfig.each { clazz, fieldConfig ->
+
+        if (filePath.matches(".*${clazz}.java")) {
+            fieldConfig.each {
+                toStringMethod = toStringMethod.replaceAll("append\\(\"${it.field}.*?\\)", "append(\"${it.field}\", \"XX MASKED XX\")")
+            }
+        }
+    }
+
+    return toStringMethod
+}
+
+task maskModelLogging() {
+    doLast {
+
+        File configFile = new File("$project.projectDir/../config/confidential.yaml")
+        def confidentialInfoConfig = new org.yaml.snakeyaml.Yaml().load(configFile.newReader());
+
+
+        file("$project.projectDir/src/main/java/io/bitnet/model").eachDirRecurse() { dir ->
+            dir.eachFileMatch(~/.*.java/) { file ->
+                def source = file.text
+                source = addToStringImportToSource(source)
+                def toStringMethod = generateToStringFromHashCodeMethod(source)
+                toStringMethod = maskFields(confidentialInfoConfig, file.path, toStringMethod)
+                source = addToStringToSource(source, toStringMethod)
+                file.text = source
+            }
+        }
+
+
+    }
+}
+
+compileJava.dependsOn maskModelLogging

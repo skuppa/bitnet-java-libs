@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "invoiceUpdate",
+    "type": "object",
+    "description": "Update a single Invoice",
+    "properties": {
+        "state": {
+            "$ref": "invoiceBase#/definitions/state"
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "state" ]
+}

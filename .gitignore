@@ -1,0 +1,8 @@
+client/src/main/java/io/bitnet/model/*
+.idea/
+.gradle/
+build/
+target/
+*.iws
+*.ipr
+*.iml

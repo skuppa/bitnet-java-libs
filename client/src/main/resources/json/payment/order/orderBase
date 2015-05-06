@@ -1,0 +1,177 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "order",
+    "description": "Base properties for an Order",
+    "definitions": {
+        "id": {
+            "description": "Unique identifier for the top-level Order entity",
+            "$ref": "payTypes#/definitions/UUID"
+        },
+        "accountId": {
+            "description": "Unique identifier for the transacting Account entity",
+            "$ref": "payTypes#/definitions/UUID"
+        },
+        "integrationId": {
+            "description": "Unique identifier for tracking partners",
+            "type": [ "string", "null" ],
+            "maxLength": 40
+        },
+        "reference": {
+            "description": "Payee Reference",
+            "type": "string",
+            "maxLength": 50
+        },
+        "desc": {
+            "description": "A summary of the Order",
+            "type": "string",
+            "maxLength": 255
+        },
+        "state": {
+            "description": "Current condition of the Order",
+            "enum": [ "OPEN", "CANCELED", "INVOICED", "PAID" ],
+            "default": "OPEN"
+        },
+        "currency": {
+            "description": "The Fiat currency used in the Order",
+            "$ref": "payTypes#/definitions/fiatCurrency"
+        },
+        "amount": {
+            "description": "The amount of the Order. Does not include tax costs, shipping costs etc",
+            "$ref": "payTypes#/definitions/currencyFormatOptional"
+        },
+        "taxAmount": {
+            "description": "The total tax amount of the Order",
+            "$ref": "payTypes#/definitions/currencyFormatOptional"
+        },
+        "shippingAmount": {
+            "description": "The total shipping amount of the Order",
+            "$ref": "payTypes#/definitions/currencyFormatOptional"
+        },
+        "totalAmount": {
+            "description": "The total amount of the Order. Includes tax costs, shipping costs etc",
+            "$ref": "payTypes#/definitions/currencyFormat"
+        },
+        "payerId": {
+            "description": "Unique identifier for the transacting Payer entity",
+            "$ref": "payTypes#/definitions/UUID"
+        },
+        "channelIdentifier": {
+            "description": "Channel identification for the Order",
+            "enum": [ "WEBSITE", "MOTO", "RETAIL", "MOBILE_APP" ]
+        },
+        "items": {
+            "description": "Collection of Order line items",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/item"
+            }
+        },
+        "createdAt": {
+            "description": "Creation timestamp of the Order (UTC)",
+            "$ref": "payTypes#/definitions/date"
+        },
+        "modifiedAt": {
+            "description": "Last modification timestamp of the Order (UTC)",
+            "$ref": "payTypes#/definitions/dateNull"
+        },
+        "item": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "name of product / service",
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "desc": {
+                    "description": "Description of product / service",
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "price": {
+                    "description": "The individual amount for a single product / service",
+                    "$ref": "payTypes#/definitions/currencyFormatOptional"
+                },
+                "quantity": {
+                    "description": "quantity of given product / service",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 99999
+                },
+                "sku": {
+                    "description": "Stock keeping unit of given product / service",
+                    "type": "string",
+                    "maxLength": 50
+                }
+            },
+            "additionalProperties": false
+        },
+        "shipping": {
+            "description": "Shipping destination information",
+            "type": "object",
+            "properties": {
+                "firstName": {
+                    "description": "First name",
+                    "type": "string",
+                    "maxLength": 60
+                },
+                "lastName": {
+                    "description": "Last name",
+                    "type": "string",
+                    "maxLength": 60
+                },
+                "address": {
+                    "description": "Address for shipping destination",
+                    "$ref": "payTypes#/definitions/address"
+                },
+                "contactNumbers": {
+                    "$ref": "#/definitions/contactNumbers"
+                },
+                "method": {
+                    "description": "Carrier and service used to ship product / service",
+                    "type": "string",
+                    "maxLength": 60
+                }
+            },
+            "additionalProperties": false
+        },
+        "httpHeader": {
+            "type": "object",
+            "properties": {
+                "header": {
+                    "description": "Header Name",
+                    "type": "string",
+                    "maxLength": 25
+                },
+                "value": {
+                    "description": "Header value",
+                    "type": "string",
+                    "maxLength": 255
+                }
+            },
+            "additionalProperties": false
+        },
+        "contactNumbers": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/contactNumber"
+            },
+            "uniqueItems": true
+        },
+        "contactNumber": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "description": "Type of contact",
+                    "enum": [ "MOBILE", "HOME", "WORK" ],
+                    "default": "HOME"
+                },
+                "number": {
+                    "description": "Number for the contact type",
+                    "$ref": "payTypes#/definitions/contactNumber"
+                }
+            },
+            "additionalProperties": false,
+            "required": [ "label", "number" ]
+        }
+    }
+}

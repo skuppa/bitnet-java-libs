@@ -1,0 +1,21 @@
+{
+    "_links": {
+        "self": {
+            "href": "/payer/v1/payers"
+        }
+    },
+    "correlationId": "0a9e9d43-550a-4ce4-a7f2-0a25c57a63c0",
+    "errors": [
+        {
+            "message": "object has missing required properties",
+            "missing": [
+                "accountId",
+                "email"
+            ],
+            "required": [
+                "accountId",
+                "email"
+            ]
+        }
+    ]
+}

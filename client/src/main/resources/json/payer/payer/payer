@@ -1,0 +1,43 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "payer",
+    "type": "object",
+    "description": "A single Payer",
+    "properties": {
+        "id": {
+            "$ref": "payerBase#/definitions/id"
+        },
+        "accountId": {
+            "$ref": "payerBase#/definitions/accountId"
+        },
+        "reference": {
+            "$ref": "payerBase#/definitions/reference"
+        },
+        "firstName": {
+            "$ref": "payerBase#/definitions/firstName"
+        },
+        "lastName": {
+            "$ref": "payerBase#/definitions/lastName"
+        },
+        "address": {
+            "$ref": "payerBase#/definitions/address"
+        },
+        "email": {
+            "$ref": "payerBase#/definitions/email"
+        },
+        "contactNumbers": {
+            "$ref": "payerBase#/definitions/contactNumbers"
+        },
+        "refundPaymentAddress": {
+            "$ref": "payerBase#/definitions/refundPaymentAddress"
+        },
+        "createdAt": {
+            "$ref": "payerBase#/definitions/createdAt"
+        },
+        "modifiedAt": {
+            "$ref": "payerBase#/definitions/modifiedAt"
+        }
+    },
+    "additionalProperties": true,
+    "required": [ "id", "accountId", "createdAt" ]
+}

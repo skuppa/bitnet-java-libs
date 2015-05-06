@@ -1,0 +1,43 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "refund",
+    "type": "object",
+    "description": "A single Refund",
+    "properties": {
+        "id": {
+            "$ref": "refundBase#/definitions/id"
+        },
+        "accountId": {
+            "$ref": "refundBase#/definitions/accountId"
+        },
+        "invoiceId": {
+            "$ref": "refundBase#/definitions/invoiceId"
+        },
+        "reference": {
+            "$ref": "refundBase#/definitions/reference"
+        },
+        "state": {
+            "$ref": "refundBase#/definitions/state"
+        },
+        "instruction": {
+            "$ref": "refundBase#/definitions/instruction"
+        },
+        "paymentAddress": {
+            "$ref": "refundBase#/definitions/paymentAddress"
+        },
+        "requested": {
+            "$ref": "refundBase#/definitions/fiatCurrencyPair"
+        },
+        "sent": {
+            "$ref": "refundBase#/definitions/cryptoCurrencyPairOptional"
+        },
+        "createdAt": {
+            "$ref": "refundBase#/definitions/createdAt"
+        },
+        "modifiedAt": {
+            "$ref": "refundBase#/definitions/modifiedAt"
+        }
+    },
+    "additionalProperties": true,
+    "required": [ "id", "invoiceId", "state", "instruction", "paymentAddress", "requested", "createdAt" ]
+}

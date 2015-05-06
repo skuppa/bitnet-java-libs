@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "Payer Create 400 HAL",
+    "type": "object",
+    "definitions": {
+        "_links": {
+            "type": "object",
+            "properties": {
+                "self": {
+                    "description": "Self referring link",
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "$ref": "hal#/definitions/href"
+                        }
+                    }
+                }
+            },
+            "required": [ "self", "payer" ],
+            "additionalProperties": true
+        }
+    }
+}

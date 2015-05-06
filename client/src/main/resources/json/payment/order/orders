@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "order collection",
+    "type": "object",
+    "properties": {
+        "size":  {
+            "type": "integer"
+        },
+       "_embedded": {
+                   "properties": {
+                       "orders": {
+                           "type": "array",
+                           "items": {
+                               "$ref": "order"
+                           }
+                       }
+                   }
+        }
+    },
+    "required": [ "size", "orders" ],
+    "additionalProperties": true
+}

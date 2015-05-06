@@ -1,0 +1,26 @@
+io.bitnet.model.payment.order.Orders:
+  imports: |
+    import java.util.Collections;
+    import java.util.List;
+  methods: |
+    public List<Order> getOrders() {
+        return _embedded == null || size == 0 ? Collections.<Order>emptyList() : _embedded.getOrders();
+    }
+
+io.bitnet.model.payment.invoice.Invoices:
+  imports: |
+    import java.util.Collections;
+    import java.util.List;
+  methods: |
+    public List<Invoice> getInvoices() {
+        return _embedded == null || size == 0 ? Collections.<Invoice>emptyList() : _embedded.getInvoices();
+    }
+
+io.bitnet.model.refund.refund.Refunds:
+  imports: |
+    import java.util.Collections;
+    import java.util.List;
+  methods: |
+    public List<Refund> getRefunds() {
+        return _embedded == null || size == 0 ? Collections.<Refund>emptyList() : _embedded.getRefunds();
+    }

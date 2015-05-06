@@ -1,0 +1,61 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "order",
+    "type": "object",
+    "description": "A single Order",
+    "properties": {
+        "id": {
+            "$ref": "orderBase#/definitions/id"
+        },
+        "accountId": {
+            "$ref": "orderBase#/definitions/accountId"
+        },
+        "reference": {
+            "$ref": "orderBase#/definitions/reference"
+        },
+        "integrationId": {
+            "$ref": "orderBase#/definitions/integrationId"
+        },
+        "desc": {
+            "$ref": "orderBase#/definitions/desc"
+        },
+        "state": {
+            "$ref": "orderBase#/definitions/state"
+        },
+        "currency": {
+            "$ref": "orderBase#/definitions/currency"
+        },
+        "amount": {
+            "$ref": "orderBase#/definitions/amount"
+        },
+        "taxAmount": {
+            "$ref": "orderBase#/definitions/taxAmount"
+        },
+        "shippingAmount": {
+            "$ref": "orderBase#/definitions/shippingAmount"
+        },
+        "totalAmount": {
+            "$ref": "orderBase#/definitions/totalAmount"
+        },
+        "payerId": {
+            "$ref": "orderBase#/definitions/payerId"
+        },
+        "channelIdentifier": {
+            "$ref": "orderBase#/definitions/channelIdentifier"
+        },
+        "items": {
+            "$ref": "orderBase#/definitions/items"
+        },
+        "createdAt": {
+            "$ref": "orderBase#/definitions/createdAt"
+        },
+        "modifiedAt": {
+            "$ref": "orderBase#/definitions/modifiedAt"
+        },
+        "shipping": {
+            "$ref": "orderBase#/definitions/shipping"
+        }
+    },
+    "additionalProperties": true,
+    "required": [ "id", "accountId", "state", "currency", "amount", "taxAmount", "shippingAmount", "createdAt" ]
+}

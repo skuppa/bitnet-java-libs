@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "orderUpdate",
+    "type": "object",
+    "description": "Update a single Order",
+    "properties": {
+        "state": {
+            "$ref": "orderBase#/definitions/state"
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "state" ]
+}

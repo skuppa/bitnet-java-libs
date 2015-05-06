@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "invoiceAmountPaidUpdate",
+    "type": "object",
+    "description": "Update a single Invoice's state, amount received and confirmations",
+    "properties": {
+        "state": {
+            "$ref": "invoiceBase#/definitions/state",
+            "default": null
+        },
+        "amountReceived": {
+            "description": "Amount received against the Invoice",
+            "$ref": "payTypes#/definitions/cryptoCurrencyOptionalFormat",
+            "default": null
+        },
+        "confirmations": {
+            "description": "The minimum confirmation level across all payments made against the Invoice",
+            "type": [ "string", "null" ],
+            "default": null,
+            "pattern": "^(0|[1-9]{1}[0-9]{0,5})$"
+        }
+    },
+    "additionalProperties": false
+}

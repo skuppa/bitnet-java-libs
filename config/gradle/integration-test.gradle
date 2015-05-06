@@ -1,0 +1,26 @@
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+        }
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+task integrationTest(type: Test, dependsOn: test, description: "Run integration tests (located in src/integrationTest/...).") {
+    testClassesDir = project.sourceSets.integrationTest.output.classesDir
+    classpath = project.sourceSets.integrationTest.runtimeClasspath
+    forkEvery = 1
+}
+
+check.dependsOn integrationTest
+
+task testReport(type: TestReport, dependsOn: integrationTest) {
+    destinationDir = file("$buildDir/reports/tests")
+    reportOn test, integrationTest
+}

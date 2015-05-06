@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "refundUpdate",
+    "type": "object",
+    "description": "Update a single Refund",
+    "properties": {
+        "state": {
+            "$ref": "refundBase#/definitions/state"
+        },
+        "amount": {
+            "$ref": "refundBase#/definitions/sentAmount"
+        },
+        "currency": {
+            "$ref": "refundBase#/definitions/sentCurrency"
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "state" ]
+}

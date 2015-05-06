@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "refunds collection",
+    "type": "object",
+    "properties": {
+        "size": {
+            "type": "integer"
+        },
+        "_embedded": {
+            "properties": {
+                "refunds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "refund"
+                    }
+                }
+            }
+        }
+    },
+    "required": [ "size", "refunds" ],
+    "additionalProperties": true
+}

@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "invoice",
+    "type": "object",
+    "description": "A single Invoice",
+    "properties": {
+        "id": {
+            "$ref": "invoiceBase#/definitions/id"
+        },
+        "accountId": {
+            "$ref": "invoiceBase#/definitions/accountId"
+        },
+        "reference": {
+            "$ref": "invoiceBase#/definitions/reference"
+        },
+        "orderId": {
+            "$ref": "invoiceBase#/definitions/orderId"
+        },
+        "state": {
+            "$ref": "invoiceBase#/definitions/state"
+        },
+        "quote": {
+            "$ref": "invoiceBase#/definitions/quote"
+        },
+        "amountReceived": {
+            "$ref": "invoiceBase#/definitions/amountReceived"
+        },
+        "paymentAddress": {
+            "$ref": "invoiceBase#/definitions/paymentAddress"
+        },
+        "paymentUri": {
+            "$ref": "invoiceBase#/definitions/paymentUri"
+        },
+        "requiredVerification": {
+            "$ref": "invoiceBase#/definitions/requiredVerification"
+        },
+        "confirmations": {
+            "$ref": "invoiceBase#/definitions/confirmations"
+        },
+        "refundIds": {
+            "$ref": "invoiceBase#/definitions/refundIds"
+        },
+        "createdAt": {
+            "$ref": "invoiceBase#/definitions/createdAt"
+        },
+        "modifiedAt": {
+            "$ref": "invoiceBase#/definitions/modifiedAt"
+        },
+        "expiresAt": {
+            "$ref": "invoiceBase#/definitions/expiresAt"
+        }
+    },
+    "additionalProperties": true,
+    "required": [ "id", "orderId", "state", "quote", "paymentAddress", "paymentUri", "requiredVerification", "createdAt" ]
+}

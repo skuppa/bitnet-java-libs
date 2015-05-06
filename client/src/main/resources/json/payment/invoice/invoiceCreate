@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "invoice",
+    "type": "object",
+    "description": "Create a  single Invoice",
+    "properties": {
+        "accountId": {
+            "$ref": "invoiceBase#/definitions/accountId"
+        },
+        "reference": {
+            "$ref": "invoiceBase#/definitions/reference"
+        },
+        "orderId": {
+            "$ref": "invoiceBase#/definitions/orderId"
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "accountId", "orderId" ]
+}

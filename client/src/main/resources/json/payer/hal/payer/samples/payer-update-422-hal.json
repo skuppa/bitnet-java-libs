@@ -1,0 +1,20 @@
+{
+    "_links": {
+        "self": {
+            "href": "/payer/v1/payers/2479a57f-2847-480e-aada-163e0fdad7cb"
+        }
+    },
+    "correlationId": "dff404cd-2427-41eb-aa4b-ca92e37e0fa2",
+    "errors": [
+        {
+            "message": "field does not match any enum value",
+            "path": "/contactNumbers/0/label",
+            "enum": [
+                "MOBILE",
+                "HOME",
+                "WORK"
+            ],
+            "value": "EMAIL"
+        }
+    ]
+}

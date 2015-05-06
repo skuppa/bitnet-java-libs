@@ -1,0 +1,30 @@
+buildscript {
+    dependencies {
+        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:0.4.11'
+    }
+}
+
+
+apply from: '../config/gradle/pojo-generation.gradle'
+apply from: '../config/gradle/log-mask.gradle'
+apply from: '../config/gradle/custom-validation.gradle'
+apply from: '../config/gradle/custom-methods.gradle'
+apply from: '../config/gradle/bintray-publish.gradle'
+
+dependencies {
+    compile 'org.bitcoinj:bitcoinj-core:0.12.3'
+    testCompile "junit:junit:4.11"
+    testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
+    testCompile 'org.mockito:mockito-core:2.0.5-beta'
+}
+
+pmdMain {
+    exclude "**/io/bitnet/model/**"
+}
+
+task cleanModel() << {
+    delete 'src/main/java/io/bitnet/model'
+}
+
+clean.dependsOn cleanModel
+

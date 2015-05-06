@@ -1,0 +1,54 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "payer",
+    "description": "Base properties for a Payer",
+    "definitions": {
+        "id": {
+            "description": "Unique identifier for the top-level Payer entity",
+            "$ref": "payerTypes#/definitions/UUID"
+        },
+        "accountId": {
+            "description": "Unique identifier for the Account entity that created the Payer",
+            "$ref": "payerTypes#/definitions/UUID"
+        },
+        "reference": {
+            "description": "Merchant supplied identifier for the Payer entity",
+            "$ref": "payerTypes#/definitions/reference"
+        },
+        "firstName": {
+            "description": "First name",
+            "$ref": "payerTypes#/definitions/name"
+        },
+        "lastName": {
+            "description": "Last name",
+            "$ref": "payerTypes#/definitions/name"
+        },
+        "address": {
+            "description": "Address information for Payer",
+            "$ref": "payerTypes#/definitions/address"
+        },
+        "email": {
+            "description": "Email address for Payer",
+            "$ref": "payerTypes#/definitions/email"
+        },
+        "contactNumbers": {
+            "$ref": "payerTypes#/definitions/contactNumbers"
+        },
+        "refundPaymentAddress": {
+            "description": "Coin address used to receive any refunds",
+            "$ref": "payerTypes#/definitions/paymentAddress"
+        },
+        "refundPaymentAddressOptional": {
+            "description": "Coin address used to receive any refunds",
+            "$ref": "payerTypes#/definitions/paymentAddressOptional"
+        },
+        "createdAt": {
+            "description": "Creation timestamp of the Payer (UTC)",
+            "$ref": "payerTypes#/definitions/date"
+        },
+        "modifiedAt": {
+            "description": "Last modification timestamp of the Payer (UTC)",
+            "$ref": "payerTypes#/definitions/dateNull"
+        }
+    }
+}

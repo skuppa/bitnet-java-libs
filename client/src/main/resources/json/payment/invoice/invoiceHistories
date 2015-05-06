@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "invoice history collection",
+    "type": "object",
+    "description": "Invoice history collection",
+    "properties": {
+        "size":  {
+            "type": "integer"
+        },
+        "invoiceHistories": {
+            "type": "array",
+            "items": {
+                "$ref": "invoiceHistory"
+            }
+        }
+    },
+    "required": [ "size", "invoiceHistories" ],
+    "additionalProperties": false
+}
+
+
+

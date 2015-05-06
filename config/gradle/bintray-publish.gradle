@@ -1,0 +1,20 @@
+apply plugin: "com.jfrog.bintray"
+
+bintray {
+    user = project.hasProperty('bintray_user') ? bintray_user : ''
+    key = project.hasProperty('bintray_key') ? bintray_key : ''
+    configurations = ['archives']
+    publications = ['mavenJava']
+    publish = true
+    pkg {
+        repo = 'maven'
+        userOrg = project.hasProperty('bintray_org') ? bintray_org : 'bitnet'
+        name = "io.bitnet:bitnet-java-${project.name}"
+        desc = 'Libraries for accessing Bitnet API'
+        websiteUrl = 'http://bitnet.io'
+        issueTrackerUrl = 'https://github.com/bitnet/bitnet-client-libs/issues'
+        vcsUrl = 'https://github.com/bitnet/bitnet-client-libs.git'
+        licenses = ['Apache-2.0']
+        publicDownloadNumbers = true
+    }
+}

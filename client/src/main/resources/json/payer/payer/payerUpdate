@@ -1,0 +1,31 @@
+{
+    "$schema": "http://json-schemas.org/draft-04/schemas",
+    "title": "payer",
+    "type": "object",
+    "description": "Update a single Payer",
+    "properties": {
+        "reference": {
+            "$ref": "payerBase#/definitions/reference"
+        },
+        "firstName": {
+            "$ref": "payerTypes#/definitions/nameOptional"
+        },
+        "lastName": {
+            "$ref": "payerTypes#/definitions/nameOptional"
+        },
+        "address": {
+            "$ref": "payerBase#/definitions/address"
+        },
+        "email": {
+            "$ref": "payerBase#/definitions/email"
+        },
+        "contactNumbers": {
+            "$ref": "payerBase#/definitions/contactNumbers"
+        },
+        "refundPaymentAddress": {
+            "$ref": "payerBase#/definitions/refundPaymentAddressOptional"
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "email" ]
+}
