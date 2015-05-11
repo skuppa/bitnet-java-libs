@@ -150,11 +150,9 @@ Address payerAddress = new Address()
 /*
  * Build a payer with an address, reference and refund payment address.
  * @param YOUR_UNIQUE_REFERENCE This is an unique identifier of your choosing.
- *                              If you submit two new payers with the same reference
- *                              you will get a BitnetConflictException.
+ *        If you submit two new payers with the same reference you will get a BitnetConflictException.
  * @param REFUND_PAYMENT_ADDRESS This can be populated at time of creation, or
- *                               updated at a later date. A refund payment address
- *                               must be set in order to initiate a refund for a Payer.
+ *        updated at a later date. A refund payment address must be set in order to initiate a refund for a Payer.
  */
 PayerCreate newPayer = new PayerCreate()
                 .withAccountId(YOUR_BITNET_ACCOUNT_ID)
@@ -350,7 +348,8 @@ On successful creation of an invoice, the linked order will be updated to a stat
 ```java
 /*
  * Build an InvoiceUpdate object with Canceled state.
- * IMPORTANT: The state of an invoice can be updated to CANCELED if the invoice is OPEN and no payments have been detected.
+ * IMPORTANT: The state of an invoice can be updated to CANCELED if the invoice is
+ *            OPEN and no payments have been detected.
  * Note: This is the only type of update that can currently be made to an invoice.
  */
 InvoiceUpdate invoiceToUpdate = new InvoiceUpdate()
