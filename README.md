@@ -1,24 +1,45 @@
-# Java
+# Bitnet Java SDK
 
-## Introduction
 
-All Bitnet services can be accessed through the Bitnet object. You can obtain an instance of the object as follows:
+[Bitnet](https://bitnet.io/) is an enterprise grade digital commerce platform delivering the security, reliability and scalability demanded by global businesses. There are a number of ways of integrating with the platform; The Java SDK is one of the integrations. You can find full details on the platform and all integrations in the [implementation guide](https://developer.bitnet.io/implementation_guide).
 
-```java
-Bitnet bitnet = Bitnet.start(YOUR_CLIENT_ID, YOUR_SECRET);
-```
+The following document should provide all the information you need to get up and running with the SDK.
 
-There are a number of available services which correspond one-to-one with the Bitnet API:
-* Payer
-* Order
-* Invoice
-* Refund
+## Overview
 
-## Build
+< stuff >
 
-The Bitnet Java SDK is publish to jCenter under the identifier [io.bitnet:bitnet-java-sdk](https://dl.bintray.com/bitnet/maven/io/bitnet/bitnet-java-sdk/)
+## Prerequisites
 
-### Gradle
+### Bitnet Credentials
+
+Bitnet provide production and test environments. Before using any of their services you must have a registered account for that environment. Once registered you will be provided with the following key pieces of information required to use the SDK:
+
+|        | Notes |
+| -----------| ----------------------------------------------------- |
+| Account Id | Your Bitnet Account Id for the environment.
+| Client Id  | Your Bitnet Client Id for the environment.
+| Secret     | Your Bitnet Secret for the environment.
+
+
+### IP Whitelisting
+
+All Bitnet environments use a whitelist of permitted IP addresses. Your IP must be added to this list before you can use the service. This should be handled at registration, but if you receive access denied messages this is a key detail to check with Bitnet.
+
+## Getting Started
+
+You can either take a look at the quick start example [project](#quickStart) or you can [add](#add) the dependencies to your own project and start working with the Bitnet object.
+
+<a name="quickStart"></a>
+### Quick Start
+
+There is an [example project](https://github.com/bitnet/bitnet-java-libs/tree/master/example) which you can use to get up and running with the SDK immediately. This demonstrates how to set up the SDK and get started making calls to the Bitnet platform.
+
+### <a id="add"></a> Adding Dependencies
+
+The Bitnet Java SDK is available from jCenter under the identifier [io.bitnet:bitnet-java-sdk](https://dl.bintray.com/bitnet/maven/io/bitnet/bitnet-java-sdk/).
+
+#### Gradle
 
 To add the Bitnet SDK to a Gradle project make sure jCenter is listed within the projects repositories.
 
@@ -39,7 +60,7 @@ dependencies {
 }
 ```
 
-### Maven
+#### Maven
 
 To add the Bitnet SDK to a Maven project make sure jCenter is listed within the projects repositories.
 
@@ -62,32 +83,60 @@ And add the bitnet-java-sdk with the latest version as follows.
     </dependency>
 </dependencies>
 ```
+#### The Bitnet Object
 
-### Quickstart project
+All Bitnet services can be accessed through the Bitnet object. You can obtain an instance of the object as follows:
 
-Inside the example directory is a very basic application demonstrating making calls to the Bitnet API.
- 
+```java
+/*
+ * Get an instance of the Bitnet object to provide access to Bitnet Production services.
+ * @param YOUR_BITNET_CLIENT_ID The client id given to you by Bitnet for the current environment.
+ * @param YOUR_BITNET_SECRET The secret given to you by Bitnet for the current environment
+ */
+Bitnet bitnet = Bitnet.start(YOUR_BITNET_CLIENT_ID, YOUR_BITNET_SECRET);
+```
+
+or for the test environment:
+
+```java
+Bitnet binet = Bitnet.startTest(YOUR_BITNET_CLIENT_ID, YOUR_BITNET_SECRET)
+```
+
+## Using Bitnet Services
+
+There are a number of available services which correspond one-to-one with the Bitnet API:
+* Payer
+* Order
+* Invoice
+* Refund
+
 ## Authentication
 
-The Bitnet API uses OAuth 2.0 for authentication. The SDK will manage authentication for you using the Client Id and Secret you provided.
+The Bitnet API uses OAuth 2.0 for authentication. The SDK will manage authentication for you using the Client Id and Secret Bitnet provided.
 
 ## Payer
 
 ### Creating a Payer
 
-A payer must include an e-mail address on creation, as well as your Bitnet accountId.
+Start by building a PayerCreate object with the Payer's details which can passed to the Bitnet Service.
 
-An optional unique reference may also be supplied when creating a payer. You cannot create two payers with duplicate references; if you try to do so a BitnetConflictException will be thrown.
-
-A payer also contains a refund payment address, which can be populated at time of creation, or updated at a later date. A refund payment address must be set in order to initiate a refund.
+For example:
 
 ```java
-// Creating a payer object with minimal required info
+/*
+ * Build a payer object with minimal required info.
+ * @param YOUR_BITNET_ACCOUNT_ID The account id given to you by Bitnet for the current environment.
+ * @param EMAIL The email address for the new payer.
+ */
 PayerCreate newPayer = new PayerCreate()
-                .withAccountId(YOUR_ACCOUNT_ID)
-                .withEmail("myemail@email.com");
+                .withAccountId(YOUR_BITNET_ACCOUNT_ID)
+                .withEmail("thePayersEmailAddress@email.com")
+```
 
-// Creating a payer object with address and reference
+or an example with address, reference and refund payment address:
+
+```java
+// Build a payer address
 Address payerAddress = new Address()
                 .withAddressLine1("9 test street")
                 .withAddressLine2("test avenue")
@@ -96,13 +145,25 @@ Address payerAddress = new Address()
                 .withPostalCode("60606")
                 .withCountry(Address.Country.US);
 
+/*
+ * Build a payer with an address, reference and refund payment address.
+ * @param YOUR_UNIQUE_REFERENCE This is an unique identifier of your choosing. If you submit two new payers with the same reference you will get a BitnetConflictException.
+ * @param REFUND_PAYMENT_ADDRESS This can be populated at time of creation, or updated at a later date. A refund payment address must be set in order to initiate a refund for a Payer.
+ */
 PayerCreate newPayer = new PayerCreate()
-                .withAccountId(YOUR_ACCOUNT_ID)
-                .withEmail("myemail@email.com")
+                .withAccountId(YOUR_BITNET_ACCOUNT_ID)
+                .withEmail("thePayersEmailAddress@email.com")
                 .withReference(YOUR_UNIQUE_REFERNCE)
+                .withRefundPaymentAddress(REFUND_PAYMENT_ADDRESS)
                 .withAddress(payerAddress);
 
-// Invoke the create payer service with a payer object
+```
+
+Now call the Bitnet service to create the Payer
+
+```java
+
+// Calling the BITNET create payer service with a payer object
 Payer payer = bitnet.payerService().createPayer(newPayer);
 ```
 
@@ -121,7 +182,7 @@ Payer updatedPayer = bitnet.payerService().updatePayer(payerToUpdate, PAYER_ID);
 You can retrieve a payer using it's id.
 
 ```java
-Payer payer = bitnet.payerService() getPayer(PAYER_ID);
+Payer payer = bitnet.payerService().getPayer(PAYER_ID);
 ```
 
 ## Order
@@ -222,7 +283,7 @@ List<Invoice.State> states = new ArrayList<Invoice.State>();
 states.add(Invoice.State.PAID);
 
 Invoices invoices = bitnet.invoiceService().getInvoices(
-    YOUR_ACCOUNT_ID,
+    YOUR_BITNET_ACCOUNT_ID,
     INVOICE_PAYMENT_ADDRESS,
     states,
     ORDER_ID_ASSOCIATED_WITH_INVOICES,
@@ -242,7 +303,7 @@ To initiate a full refund, an invoiceId and instruction of FULL must be supplied
 
 ```java
 RefundCreate newRefund = new RefundCreate()
-                .withAccountId(YOUR_ACCOUNT_ID)
+                .withAccountId(YOUR_BITNET_ACCOUNT_ID)
                 .withInstruction(Refund.Instruction.FULL)
                 .withInvoiceId(INVOICE_ID);
 
@@ -258,7 +319,7 @@ The currency supplied in the refund request must match the order pricing currenc
 ```java
 // Creating a partial refund.
 RefundCreate newRefund = new RefundCreate()
-                .withAccountId(YOUR_ACCOUNT_ID)
+                .withAccountId(YOUR_BITNET_ACCOUNT_ID)
                 .withAmount(REFUND_AMOUNT)
                 .withCurrency(REFUND_CURRENCY)
                 .withInstruction(Refund.Instruction.PARTIAL)
@@ -273,7 +334,7 @@ To initiate a mispayment correction, an invoiceId and instruction of MISPAYMENT_
 
 ```java
 RefundCreate newRefund = new RefundCreate()
-                .withAccountId(YOUR_ACCOUNT_ID)
+                .withAccountId(YOUR_BITNET_ACCOUNT_ID)
                 .withInstruction(Refund.Instruction.MISPAYMENT_CORRECTION)
                 .withInvoiceId(INVOICE_ID);
 
@@ -294,7 +355,7 @@ List<Refund.State> states = new ArrayList<Refund.State>();
 states.add(Refund.State.OPEN);
 
 Refunds refunds = bitnet.refundService().getRefunds(
-    YOUR_ACCOUNT_ID,
+    YOUR_BITNET_ACCOUNT_ID,
     INVOICE_ID,
     states,
     OFFSET_FROM_ZERO,
@@ -365,7 +426,7 @@ In this case you should implement:
 
 ## Developer setup
 
-### Prerequisites 
+### Prerequisites
 
 To build the client and SDK you will need:
 * Java 7+ installed
@@ -379,7 +440,7 @@ gradlew.bat build -x integrationTest
 
 ```
 
-The above build will not execute integration tests as they require a valid client account for testing. 
+The above build will not execute integration tests as they require a valid client account for testing.
 If you have a client account then update either sdk/integrationTest.properties or ~/.bitnet-java-libs/integrationTest.properties with your clientId, secret, environment, accountId, internalClientId and internalSecret
 
 ```java
@@ -397,10 +458,10 @@ The client provides a java representation of the model and interfaces supported 
 
 ### SDK overview
 
-The SDK provides a default implementation of the Bitnet API client using [Feign](https://github.com/Netflix/feign). 
+The SDK provides a default implementation of the Bitnet API client using [Feign](https://github.com/Netflix/feign).
 
 It is possible to provide an alternative implementation using the BitnetServiceProvider interface.
- 
+
 The FeignServiceProvider configures an appropriate Feign client and provides access to the Bitnet services.
 
 ```java
@@ -418,10 +479,3 @@ public Feign.Builder feignBuilder() {
 ```
 
 Using decorators for the Feign encoder and decoder it supports request/response logging, validation, retries and exception handling.
-
-
-
-
-
-
-
