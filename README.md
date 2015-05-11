@@ -149,8 +149,12 @@ Address payerAddress = new Address()
 
 /*
  * Build a payer with an address, reference and refund payment address.
- * @param YOUR_UNIQUE_REFERENCE This is an unique identifier of your choosing. If you submit two new payers with the same reference you will get a BitnetConflictException.
- * @param REFUND_PAYMENT_ADDRESS This can be populated at time of creation, or updated at a later date. A refund payment address must be set in order to initiate a refund for a Payer.
+ * @param YOUR_UNIQUE_REFERENCE This is an unique identifier of your choosing.
+ *                              If you submit two new payers with the same reference
+ *                              you will get a BitnetConflictException.
+ * @param REFUND_PAYMENT_ADDRESS This can be populated at time of creation, or
+ *                               updated at a later date. A refund payment address
+ *                               must be set in order to initiate a refund for a Payer.
  */
 PayerCreate newPayer = new PayerCreate()
                 .withAccountId(YOUR_BITNET_ACCOUNT_ID)
@@ -180,7 +184,8 @@ Start by building a PayerUpdate object.
 ```java
 /* Build a PayerUpdate object.
  * All payer information, apart from the Payer Id, can be updated.
- * IMPORTANT: All previous payer information must be supplied, otherwise this payer information will be overwritten.
+ * IMPORTANT: All previous payer information must be supplied, otherwise this
+ *            payer information will be overwritten.
  */
 PayerUpdate payerToUpdate = new PayerUpdate()
                         .withEmail("updated@email.com");
@@ -212,9 +217,12 @@ Once you have a Payer you can create an order.
 ```java
 /*
  * Build an order object with minimal required info
- * @param EXISTING_PAYER_ID The existing payer id which should be tied to this order. A payer may be linked to multiple orders.
- * @param THE_CURRENCY_SPECIFIED_IN_YOUR_ORDER This is the currency that has been used in the shopping basket, etc, for this order.
- * @param THE_PRICE_SPECIFIED_IN_YOUR_ORDER This is the price that has been used in the shopping basket, etc for this order.
+ * @param EXISTING_PAYER_ID The existing payer id which should be tied to this order.
+ *                          A payer may be linked to multiple orders.
+ * @param THE_CURRENCY_SPECIFIED_IN_YOUR_ORDER This is the currency that has been used in
+ *                                             the shopping basket, etc, for this order.
+ * @param THE_PRICE_SPECIFIED_IN_YOUR_ORDER This is the price that has been used in the
+ *                                          shopping basket, etc for this order.
  * Note: Digital currency is the responsibility of the Invoice, not the Order.
  */
 OrderCreate newOrder = new OrderCreate()
@@ -245,8 +253,8 @@ items.add(new Item()
 OrderCreate newOrder = new OrderCreate()
                     .withAccountId(YOUR_BITNET_ACCOUNT_ID)
                     .withPayerId(EXISTING_PAYER_ID)
-                    .withCurrency(Order.Currency.BBD)
-                    .withTotalAmount("55.12")
+                    .withCurrency(THE_CURRENCY_SPECIFIED_IN_YOUR_ORDER)
+                    .withTotalAmount(THE_PRICE_SPECIFIED_IN_YOUR_ORDER)
                     .withDesc("A test order")
                     .withItems(items);
 ```
@@ -306,7 +314,8 @@ states.add(Order.State.OPEN);
 /*
  * Call the BITNET service to get a list of orders.
  * @states The list of states you are interested in.
- * @OFFSET_FROM_ZERO The list of orders starts with an index of 0. This number indicates where the list or subset of orders should start.
+ * @OFFSET_FROM_ZERO The list of orders starts with an index of 0.
+ *                   This number indicates where the list or subset of orders should start.
  * @NUMBER_OF_ORDERS The number of orders to include in this list of orders.
  */
 Orders orders = bitnet.orderService().getOrders(YOUR_BITNET_ACCOUNT_ID, states, OFFSET_FROM_ZERO, NUMBER_OF_ORDERS);
@@ -357,17 +366,31 @@ Invoice canceledInvoice = bitnet.invoiceService().updateInvoice(INVOICE_ID, invo
 
 ### Retrieving Invoices
 
-Invoices can be retrieved individually or as a list. Your accountId must supplied as a query param when retrieving a list.
+Invoices can be retrieved individually:
 
 ```java
 // Get Invoice by Id
 Invoice invoice = bitnet.invoiceService().getInvoice(INVOICE_ID);
+```
 
-// Getting a list of invoices
-// Set up invoice states.
+or as a list:
+
+```java
+/*
+ * Start by building a list with the invoice states you are interested in.
+ */
 List<Invoice.State> states = new ArrayList<Invoice.State>();
 states.add(Invoice.State.PAID);
 
+/*
+ * Call the BITNET service to get a list of invoices.
+ * @states The list of states you are interested in.
+ * @ORDER_ID_ASSOCIATED_WITH_INVOICES The order id which applies to the invoices.
+ * @OFFSET_FROM_ZERO The list of invoices starts with an index of 0.
+ *                   This number indicates where the list or subset of invoices should start.
+ * @NUMBER_OF_INVOICES The number of invoices to include in this list.
+ * NOTE: This method is overloaded. Chose the appropriate one for your needs.
+ */
 Invoices invoices = bitnet.invoiceService().getInvoices(
     YOUR_BITNET_ACCOUNT_ID,
     INVOICE_PAYMENT_ADDRESS,
