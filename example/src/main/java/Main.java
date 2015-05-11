@@ -1,3 +1,4 @@
+import com.google.common.collect.ImmutableMap;
 import feign.Logger;
 import feign.codec.EncodeException;
 import io.bitnet.Bitnet;
@@ -14,8 +15,14 @@ import io.bitnet.model.refund.refund.Refund;
 import io.bitnet.model.refund.refund.RefundCreate;
 import io.bitnet.model.refund.refund.Requested;
 import org.apache.commons.lang3.StringUtils;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
+import java.util.Map;
 import java.util.UUID;
+
+import static spark.Spark.*;
 
 /**
  * Main class for demonstrating usage.
@@ -26,6 +33,15 @@ public class Main {
     public static final String ACCOUNT_ID = "";
     public static final String SECRET = "";
     public static final String ENVIRONMENT = "";
+
+    private static final String ORDER_NOTIFICATION_SUBSCRIPTION_KEY_ID = "";
+    private static final String ORDER_NOTIFICATION_SUBSCRIPTION_SECRET = "";
+
+    private static final String INVOICE_NOTIFICATION_SUBSCRIPTION_KEY_ID = "";
+    private static final String INVOICE_NOTIFICATION_SUBSCRIPTION_SECRET = "";
+
+    private static final String REFUND_NOTIFICATION_SUBSCRIPTION_KEY_ID = "";
+    private static final String REFUND_NOTIFICATION_SUBSCRIPTION_SECRET = "";
 
     public static void main(String... args) {
         if (StringUtils.isBlank(CLIENT_ID) || StringUtils.isBlank(ACCOUNT_ID) || StringUtils.isBlank(SECRET) || StringUtils.isBlank(ENVIRONMENT)) {
@@ -113,25 +129,31 @@ public class Main {
     }
 
 
-    /**
-     * Alternative to try catch using Java 8 functions where the response is wrapped in an Optional
-     *
-     * To use:
-     *
-     * Optional<Refund> refund = call(() -> bitnet.refundService().createRefund(new RefundCreate()
-     * .withAccountId(ACCOUNT_ID)
-     * .withAmount("10.00")
-     * .withCurrency(Requested.Currency.BBD)
-     * .withInstruction(Refund.Instruction.PARTIAL)
-     * .withInvoiceId(createdInvoice.getId())));
-     *
-     * private static <T> Optional<T> call(Supplier<T> call) {
-     *   try {
-     *       return Optional.of(call.get());
-     *   } catch (BitnetException | BitnetRetryableException | EncodeException e) {
-     *       handleBitnetException(e);
-     *   }
-     *   return Optional.ofNullable(null);
-     * }
-     **/
+    private static void registerWebhookForNotifications(Bitnet bitnet) {
+        setPort(8888);
+        get(new Route("/healthCheck") {
+            @Override
+            public Object handle(Request request, Response response) {
+                return "{\"status\" : \"healthy\"}";
+            }
+        });
+
+        post(new Route("/webhook") {
+            @Override
+            public Object handle(Request request, Response response) {
+                Map headers = new ImmutableMap.Builder<String, String>()
+                        .put("Digest", request.headers("Digest"))
+                        .put("Date", request.headers("Date"))
+                        .put("Authorization", request.headers("Authorization"))
+                        .build();
+
+
+
+
+
+                return "Notification received";
+            }
+        });
+    }
+
 }

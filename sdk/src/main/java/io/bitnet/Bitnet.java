@@ -6,7 +6,12 @@ package io.bitnet;
 
 import feign.Logger;
 import feign.okhttp.OkHttpClient;
-import io.bitnet.api.*;
+import io.bitnet.api.InvoiceService;
+import io.bitnet.api.OrderService;
+import io.bitnet.api.PayerService;
+import io.bitnet.api.RefundService;
+import io.bitnet.core.notifications.BitnetNotificationHelper;
+import io.bitnet.core.notifications.NotificationSubscription;
 import io.bitnet.core.providers.BitnetServiceProvider;
 import io.bitnet.core.providers.BitnetServiceProviderBuilder;
 import io.bitnet.feign.FeignServiceProvider;
@@ -52,9 +57,9 @@ public class Bitnet implements BitnetServiceProvider {
     /**
      * Instantiate bitnet instance for communicating with the Test Bitnet API.
      *
-     * @param clientId merchants client id
-     * @param secret   merchants secret
-     * @param loggingLevel    This will log key information and all request / response data. Caution: Personally Identifying Data will be logged so only use with test data.
+     * @param clientId     merchants client id
+     * @param secret       merchants secret
+     * @param loggingLevel This will log key information and all request / response data. Caution: Personally Identifying Data will be logged so only use with test data.
      * @return bitnet configured for accessing test
      */
     public static Bitnet startTest(String clientId, String secret, Logger.Level loggingLevel) {
@@ -65,12 +70,12 @@ public class Bitnet implements BitnetServiceProvider {
      * Instantiate bitnet instance for communicating with a custom bitnet endpoint and blockchain.
      * This can be used to work with test environments.
      *
-     * @param clientId   merchants client id
-     * @param secret     merchants secret
-     * @param endpoint   endpoint of bitnet environment
-     * @param blockchain blockchain used by the bitnet environment
-     * @param loggingLevel  This will log key information and all request / response data. Caution: Personally Identifying Data will be logged so only use with test data.
-     * @param client This will configure the client used to communicate with the Bitnet API. See {@link io.bitnet.feign.OkHttpClientProvider} for pre-configured clients.
+     * @param clientId     merchants client id
+     * @param secret       merchants secret
+     * @param endpoint     endpoint of bitnet environment
+     * @param blockchain   blockchain used by the bitnet environment
+     * @param loggingLevel This will log key information and all request / response data. Caution: Personally Identifying Data will be logged so only use with test data.
+     * @param client       This will configure the client used to communicate with the Bitnet API. See {@link io.bitnet.feign.OkHttpClientProvider} for pre-configured clients.
      * @return bitnet configured for accessing a custom bitnet environment
      */
     public static Bitnet start(String clientId, String secret, String endpoint, Blockchain blockchain, Logger.Level loggingLevel, OkHttpClient client) {
@@ -108,5 +113,9 @@ public class Bitnet implements BitnetServiceProvider {
     @Override
     public RefundService refundService() {
         return serviceProvider.refundService();
+    }
+
+    public static BitnetNotificationHelper notificationHelper(NotificationSubscription... subscriptions) {
+        return new BitnetNotificationHelper(subscriptions);
     }
 }

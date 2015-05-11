@@ -20,6 +20,7 @@ dependencies {
 
 pmdMain {
     exclude "**/io/bitnet/model/**"
+    exclude "**/io/bitnet/notifications/model/**"
 }
 
 task cleanModel() << {

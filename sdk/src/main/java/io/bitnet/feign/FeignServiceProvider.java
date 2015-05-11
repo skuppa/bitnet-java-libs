@@ -39,7 +39,7 @@ public class FeignServiceProvider implements BitnetServiceProvider {
     private FeignPayerService payerService;
     private FeignRefundService refundService;
     private DefaultCache cache;
-    private FeignAuthenticationManager authenticationManager;
+    protected FeignAuthenticationManager authenticationManager;
 
     public FeignServiceProvider(String clientId, String secret, String endPoint, Blockchain blockchain) {
         this(clientId, secret, endPoint, blockchain, Logger.Level.NONE, OkHttpClientProvider.okHttpClient());
@@ -62,7 +62,7 @@ public class FeignServiceProvider implements BitnetServiceProvider {
         authenticationManager = new FeignAuthenticationManager(this, cache);
     }
 
-    protected FeignAuthenticationManager authenticationManager() {
+    protected AuthenticationManager authenticationManager() {
         return authenticationManager;
     }
 

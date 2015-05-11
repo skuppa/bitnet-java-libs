@@ -6,9 +6,10 @@ package io.bitnet.feign.decoders;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import io.bitnet.core.exceptions.BitnetAccessDeniedException;
-import io.bitnet.feign.FeignAuthenticationManager;
+import io.bitnet.feign.AuthenticationManager;
 
 import static io.bitnet.feign.decoders.HttpStatusCode.*;
+
 ;
 
 /**
@@ -17,9 +18,9 @@ import static io.bitnet.feign.decoders.HttpStatusCode.*;
 public class BitnetErrorDecoder implements ErrorDecoder {
 
     private final BitnetErrorFactory errorFactory;
-    private final FeignAuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    public BitnetErrorDecoder(BitnetErrorFactory errorFactory, FeignAuthenticationManager authenticationManager) {
+    public BitnetErrorDecoder(BitnetErrorFactory errorFactory, AuthenticationManager authenticationManager) {
         this.errorFactory = errorFactory;
         this.authenticationManager = authenticationManager;
     }

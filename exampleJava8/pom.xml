@@ -20,7 +20,7 @@
         <dependency>
             <groupId>io.bitnet</groupId>
             <artifactId>bitnet-java-sdk</artifactId>
-            <version>0.1.20-alpha</version>
+            <version>0.1.22-alpha</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.sparkjava</groupId>
             <artifactId>spark-core</artifactId>
-            <version>1.1.1</version>
+            <version>2.1</version>
         </dependency>
     </dependencies>
 
@@ -41,8 +41,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
