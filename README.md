@@ -571,7 +571,90 @@ The SDK does not provide a mechanism for registered or receiving notifications, 
 
 ### Setting up the SDK for Notification Processing
 
-To be completed........
+#### Bitnet Notification Helper object
+
+The Bitnet object can provide a helper for working with notifications. You can obtain an instance of the object as follows:
+
+```java
+/*
+ * Get an instance of the Bitnet Notification Helper object to assist with verifying notifications have a valid signature/payload and for parsing the notification payload.
+ *
+ * The helper does not require credentials for subscriptions you are not interested in processing.
+ *
+ * @param ORDER_NOTIFICATION_SUBSCRIPTION_KEY_ID The subscription key id given to you for receiving order notifications.
+ * @param ORDER_NOTIFICATION_SUBSCRIPTION_SECRET The subscription key id given to you for receiving order notifications.
+ * @param INVOICE_NOTIFICATION_SUBSCRIPTION_KEY_ID The subscription key id given to you for receiving invoice notifications.
+ * @param INVOICE_NOTIFICATION_SUBSCRIPTION_SECRET The subscription key id given to you for receiving invoice notifications.
+ * @param REFUND_NOTIFICATION_SUBSCRIPTION_KEY_ID The subscription key id given to you for receiving refund notifications.
+ * @param REFUND_NOTIFICATION_SUBSCRIPTION_SECRET The subscription key id given to you for receiving refund notifications.
+ */
+BitnetNotificationHelper notificationHelper = Bitnet.notificationHelper(
+                orderSubscriptionCredentials(ORDER_NOTIFICATION_SUBSCRIPTION_KEY_ID, ORDER_NOTIFICATION_SUBSCRIPTION_SECRET),
+                invoiceSubscriptionCredentials(INVOICE_NOTIFICATION_SUBSCRIPTION_KEY_ID, INVOICE_NOTIFICATION_SUBSCRIPTION_SECRET),
+                refundSubscriptionCredentials(REFUND_NOTIFICATION_SUBSCRIPTION_KEY_ID, REFUND_NOTIFICATION_SUBSCRIPTION_SECRET));
+```
+
+### Verifying notifications
+
+The Bitnet Notification Helper verifies that a notification request has a valid payload and signature using the provided subscription credentials.
+
+```java
+public Response handle(Request request, Response response) {
+        // Collect headers used for hashing and signing the request
+        Map headers = new com.google.common.collect.ImmutableMap.ImmutableMap.Builder<String, String>()
+                .put("Digest", request.headers("Digest"))
+                .put("Date", request.headers("Date"))
+                .put("Authorization", request.headers("Authorization"))
+                .build();
+                
+        // Check that notification is verified to have a valid payload and signature.                
+        if (notificationHelper.isVerifiedNotification(headers, request.body())) {
+            ... do something with verified request.
+        }
+}
+```
+
+To find out more details on why a notification request is unverifiable.
+```java
+// Returns string explaining why notification could not be verified 
+notificationHelper.rejectNotificationReason(headers, request.body());
+```
+
+### Parsing notifications
+
+To determine how to parse a notification, you must first determine the notification's event type. 
+Currently the SDK support INVOICE_EXPIRED, INVOICE_PAYMENT_RECEIVED, INVOICE_STATE_CHANGED, ORDER_STATE_CHANGED, REFUND_STATE_CHANGED notification events.
+
+```java
+Notfication.EventType eventType = notificationHelper.getNotificationEventType(request.body())
+```
+
+The start of the event type indicates what type of notification has been received.
+
+```java
+// Parsing a invoice notification
+if (eventType == INVOICE_EXPIRED) {
+    Notification<InvoiceNotification> notification = notificationHelper.getInvoiceNotification(request.body());
+    Invoice invoice = notification.getNotification().getInvoice();
+    handleInvoiceExpired(invoice);
+}
+
+// Parsing an order notification
+if (eventType == ORDER_STATE_CHANGED) {
+    Notification<OrderNotification> notification = notificationHelper.getOrderNotification(request.body());
+    Order order = notification.getNotification().getOrder();
+    handleOrderStateChange(order);
+}
+
+// Parsing a refund notification
+if (eventType == REFUND_STATE_CHANGED) {
+    Notification<RefundNotification> notification = notificationHelper.getRefundNotification(request.body());
+    Refund refund = notification.getNotification().getRefund();
+    handleRefundStateChange(refund);
+}
+```
+
+
 
 ## Testing with a custom endpoint
 
