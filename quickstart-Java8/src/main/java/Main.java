@@ -79,8 +79,6 @@ public class Main {
 
 
     public static void main(String... args) {
-        checkPreconditions();
-
         // To connect to production you would use:
         //bitnet = Bitnet.start(CLIENT_ID, SECRET);
 
@@ -104,6 +102,11 @@ public class Main {
 
         Payer payer = createPayer();
         System.out.println("Created Payer " + payer);
+
+        if (payer == null) {
+            System.out.println("Error occurred creating payer, please review logs and configuration");
+            System.exit(0);
+        }
 
         Payer updatedPayer = updatePayer(payer);
         System.out.println("Updated Payer " + updatedPayer);
@@ -188,11 +191,6 @@ public class Main {
     }
 
     private static Order createOrder(Payer createdPayer) {
-        if (createdPayer == null) {
-            System.out.println("Unable to create order for null payer.");
-            return null;
-        }
-
         /*
          * Build a list of items.
          */
@@ -233,11 +231,6 @@ public class Main {
     }
 
     private static Invoice createInvoice(Order createdOrder) {
-        if (createdOrder == null) {
-            System.out.println("Unable to create invoice for null order.");
-            return null;
-        }
-
         /*
          * Build an InvoiceCreate object.
          * @EXISTING_ORDER_ID The id of an existing and open ORDER.
@@ -255,17 +248,14 @@ public class Main {
     }
 
     private static Refund createRefund(Invoice createdInvoice) {
-        if (createdInvoice == null) {
-            System.out.println("Unable to create refund for null invoice.");
-            return null;
-        }
-
-        return call(() -> bitnet.refundService().createRefund(new RefundCreate()
+        RefundCreate newRefund = new RefundCreate()
                 .withAccountId(ACCOUNT_ID)
                 .withAmount("10.00")
                 .withCurrency(Requested.Currency.BBD)
                 .withInstruction(Refund.Instruction.PARTIAL)
-                .withInvoiceId(createdInvoice.getId()))).orElse(null);
+                .withInvoiceId(createdInvoice.getId());
+
+        return call(() -> bitnet.refundService().createRefund(newRefund)).orElse(null);
     }
 
     /**
@@ -309,43 +299,6 @@ public class Main {
         }
     }
 
-    /**
-     * Safely make request, logging any exceptions and returning an optional object.
-     *
-     * @param call request
-     * @param <T>  return type
-     * @return object wrapped as optional
-     */
-    private static <T> Optional<T> call(Supplier<T> call) {
-        try {
-            return Optional.of(call.get());
-        } catch (BitnetException | BitnetRetryableException | EncodeException e) {
-            handleBitnetException(e);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-
-        return Optional.ofNullable(null);
-    }
-
-    /**
-     * Start listening for and handling notifications.
-     */
-    private static void startNotificationsWebhook() {
-        post("/webhook", (request, response) -> {
-            Map headers = new ImmutableMap.Builder<String, String>()
-                    .put("Digest", request.headers("Digest"))
-                    .put("Date", request.headers("Date"))
-                    .put("Authorization", request.headers("Authorization"))
-                    .build();
-            if (notificationHelper.isVerifiedNotification(headers, request.body())) {
-                return handleNotification(request);
-            } else {
-                return badRequestResponse(request, response, headers);
-            }
-        });
-    }
 
     /**
      * Process notifications and handle as appropriate.
@@ -396,23 +349,6 @@ public class Main {
     private static void waitFor(int interval, TimeUnit units) {
         Uninterruptibles.sleepUninterruptibly(interval, units);
     }
-
-    /**
-     * Start listening for requests on port.
-     *
-     * @param port to listen on for requests
-     */
-    private static void startListeningOnPort(int port) {
-        port(port);
-    }
-
-    /**
-     * Stop listening for web hook notifications.
-     */
-    public static void closeNotificationsWebhook() {
-        stop();
-    }
-
 
     /**
      * Handles invoice expired event.
@@ -468,12 +404,57 @@ public class Main {
     }
 
     /**
-     * Check that mandatory constants are populated.
+     * Safely make request, logging any exceptions and returning an optional object.
+     *
+     * @param call request
+     * @param <T>  return type
+     * @return object wrapped as optional
      */
-    private static void checkPreconditions() {
-        if (StringUtils.isBlank(CLIENT_ID) || StringUtils.isBlank(ACCOUNT_ID) || StringUtils.isBlank(SECRET)) {
-            throw new RuntimeException("Unable to start bitnet sdk due to missing credentials, please update constants in Main class");
+    private static <T> Optional<T> call(Supplier<T> call) {
+        try {
+            return Optional.of(call.get());
+        } catch (BitnetException | BitnetRetryableException | EncodeException e) {
+            handleBitnetException(e);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
+
+        return Optional.ofNullable(null);
+    }
+
+    /**
+     * Start listening for and handling notifications.
+     */
+    private static void startNotificationsWebhook() {
+        post("/webhook", (request, response) -> {
+            Map headers = new ImmutableMap.Builder<String, String>()
+                    .put("Digest", request.headers("Digest"))
+                    .put("Date", request.headers("Date"))
+                    .put("Authorization", request.headers("Authorization"))
+                    .build();
+            if (notificationHelper.isVerifiedNotification(headers, request.body())) {
+                return handleNotification(request);
+            } else {
+                return badRequestResponse(request, response, headers);
+            }
+        });
+    }
+
+    /**
+     * Start listening for requests on port.
+     *
+     * @param port to listen on for requests
+     */
+    private static void startListeningOnPort(int port) {
+        port(port);
+    }
+
+    /**
+     * Stop listening for web hook notifications.
+     */
+    public static void closeNotificationsWebhook() {
+        stop();
     }
 
 }

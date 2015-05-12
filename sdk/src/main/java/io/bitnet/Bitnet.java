@@ -17,8 +17,11 @@ import io.bitnet.core.providers.BitnetServiceProviderBuilder;
 import io.bitnet.feign.FeignServiceProvider;
 import io.bitnet.feign.OkHttpClientProvider;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.bitnet.Blockchain.BITCOIN;
 import static io.bitnet.Blockchain.TESTNET;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Accessor to bitnet API.
@@ -40,6 +43,8 @@ public class Bitnet implements BitnetServiceProvider {
      * @return bitnet configured for accessing production
      */
     public static Bitnet start(String clientId, String secret) {
+        checkArgument(isNotBlank(clientId), "Merchant's client Id can not be empty");
+        checkArgument(isNotBlank(secret), "Merchant's secret can not be empty");
         return new Bitnet(BitnetServiceProviderBuilder.client(new FeignServiceProvider(clientId, secret, ENDPOINT, BITCOIN)).get());
     }
 
@@ -51,6 +56,8 @@ public class Bitnet implements BitnetServiceProvider {
      * @return bitnet configured for accessing test
      */
     public static Bitnet startTest(String clientId, String secret) {
+        checkArgument(isNotBlank(clientId), "Merchant's client Id can not be empty");
+        checkArgument(isNotBlank(secret), "Merchant's secret can not be empty");
         return new Bitnet(BitnetServiceProviderBuilder.client(new FeignServiceProvider(clientId, secret, TEST_ENDPOINT, TESTNET)).get());
     }
 
@@ -63,6 +70,9 @@ public class Bitnet implements BitnetServiceProvider {
      * @return bitnet configured for accessing test
      */
     public static Bitnet startTest(String clientId, String secret, Logger.Level loggingLevel) {
+        checkArgument(isNotBlank(clientId), "Merchant's client Id can not be empty");
+        checkArgument(isNotBlank(secret), "Merchant's secret can not be empty");
+        checkNotNull(loggingLevel, "Logging level can not be empty");
         return new Bitnet(BitnetServiceProviderBuilder.client(new FeignServiceProvider(clientId, secret, TEST_ENDPOINT, TESTNET, loggingLevel, OkHttpClientProvider.unsafeOkHttpClient())).get());
     }
 
@@ -79,6 +89,12 @@ public class Bitnet implements BitnetServiceProvider {
      * @return bitnet configured for accessing a custom bitnet environment
      */
     public static Bitnet start(String clientId, String secret, String endpoint, Blockchain blockchain, Logger.Level loggingLevel, OkHttpClient client) {
+        checkArgument(isNotBlank(clientId), "Merchant's client Id can not be empty");
+        checkArgument(isNotBlank(secret), "Merchant's secret can not be empty");
+        checkArgument(isNotBlank(endpoint), "Bitnet endpoint can not be empty");
+        checkNotNull(blockchain, "Blockchain can not be empty");
+        checkNotNull(loggingLevel, "Logging level can not be empty");
+        checkNotNull(client, "Client can not be empty");
         return new Bitnet(BitnetServiceProviderBuilder.client(new FeignServiceProvider(clientId, secret, endpoint, blockchain, loggingLevel, client)).get());
     }
 
@@ -89,6 +105,7 @@ public class Bitnet implements BitnetServiceProvider {
      * @return bitnet configured using custom service provider
      */
     public static Bitnet start(BitnetServiceProvider serviceProvider) {
+        checkNotNull(serviceProvider, "Service provider can not be empty");
         return new Bitnet(serviceProvider);
     }
 
@@ -122,6 +139,8 @@ public class Bitnet implements BitnetServiceProvider {
      * @return configured notification helper.
      */
     public static BitnetNotificationHelper notificationHelper(NotificationSubscription... subscriptions) {
+        checkNotNull(subscriptions, "Must define at least one subscription for notification handler");
+        checkArgument(subscriptions.length > 0, "Must define at least one subscription for notification handler");
         return new BitnetNotificationHelper(subscriptions);
     }
 }
