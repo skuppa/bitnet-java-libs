@@ -151,8 +151,8 @@ Address payerAddress = new Address()
  * Build a payer with an address, reference and refund payment address.
  * @param YOUR_UNIQUE_REFERENCE This is an unique identifier of your choosing.
  *        If you submit two new payers with the same reference you will get a BitnetConflictException.
- * @param REFUND_PAYMENT_ADDRESS This can be populated at time of creation, or
- *        updated at a later date. A refund payment address must be set in order to initiate a refund for a Payer.
+ * @param REFUND_PAYMENT_ADDRESS This can be populated at time of creation, or updated at a later
+ *        date. A refund payment address must be set in order to initiate a refund for a Payer.
  */
 PayerCreate newPayer = new PayerCreate()
                 .withAccountId(YOUR_BITNET_ACCOUNT_ID)
@@ -163,7 +163,7 @@ PayerCreate newPayer = new PayerCreate()
 
 ```
 
-Now call the Bitnet service to create the Payer
+Now call the Bitnet service to create the Payer:
 
 ```java
 
@@ -173,7 +173,7 @@ Now call the Bitnet service to create the Payer
 Payer payer = bitnet.payerService().createPayer(newPayer);
 ```
 
-The returned Payer object will contain an Id which will need for all proceeding calls.
+The returned Payer object will contain an Id which you will need for all proceeding calls.
 
 ### Updating a Payer
 
@@ -216,11 +216,11 @@ Once you have a Payer you can create an order.
 /*
  * Build an order object with minimal required info
  * @param EXISTING_PAYER_ID The existing payer id which should be tied to this order.
- *                          A payer may be linked to multiple orders.
+ *        A payer may be linked to multiple orders.
  * @param THE_CURRENCY_SPECIFIED_IN_YOUR_ORDER This is the currency that has been used in
- *                                             the shopping basket, etc, for this order.
+ *        the shopping basket, etc, for this order.
  * @param THE_PRICE_SPECIFIED_IN_YOUR_ORDER This is the price that has been used in the
- *                                          shopping basket, etc for this order.
+ *        shopping basket, etc for this order.
  * Note: Digital currency is the responsibility of the Invoice, not the Order.
  */
 OrderCreate newOrder = new OrderCreate()
@@ -311,10 +311,10 @@ states.add(Order.State.OPEN);
 
 /*
  * Call the BITNET service to get a list of orders.
- * @states The list of states you are interested in.
- * @OFFSET_FROM_ZERO The list of orders starts with an index of 0.
- *                   This number indicates where the list or subset of orders should start.
- * @NUMBER_OF_ORDERS The number of orders to include in this list of orders.
+ * @param states The list of states you are interested in.
+ * @param OFFSET_FROM_ZERO The list of orders starts with an index of 0.
+ *        This number indicates where the list or subset of orders should start.
+ * @param NUMBER_OF_ORDERS The number of orders to include in this list of orders.
  */
 Orders orders = bitnet.orderService().getOrders(YOUR_BITNET_ACCOUNT_ID, states, OFFSET_FROM_ZERO, NUMBER_OF_ORDERS);
 ```
@@ -326,7 +326,7 @@ Orders orders = bitnet.orderService().getOrders(YOUR_BITNET_ACCOUNT_ID, states, 
 ```java
 /*
  * Build an InvoiceCreate object.
- * @EXISTING_ORDER_ID The id of an existing and open ORDER.
+ * @param EXISTING_ORDER_ID The id of an existing and open ORDER.
  * Note: An order can only be linked to one invoice.
  */
 InvoiceCreate newInvoice = new InvoiceCreate()
@@ -368,7 +368,9 @@ Invoice canceledInvoice = bitnet.invoiceService().updateInvoice(INVOICE_ID, invo
 Invoices can be retrieved individually:
 
 ```java
-// Get Invoice by Id
+/*
+ * Get Invoice by Id.
+ */
 Invoice invoice = bitnet.invoiceService().getInvoice(INVOICE_ID);
 ```
 
@@ -383,11 +385,11 @@ states.add(Invoice.State.PAID);
 
 /*
  * Call the BITNET service to get a list of invoices.
- * @states The list of states you are interested in.
- * @ORDER_ID_ASSOCIATED_WITH_INVOICES The order id which applies to the invoices.
- * @OFFSET_FROM_ZERO The list of invoices starts with an index of 0.
- *                   This number indicates where the list or subset of invoices should start.
- * @NUMBER_OF_INVOICES The number of invoices to include in this list.
+ * @param states The list of states you are interested in.
+ * @param ORDER_ID_ASSOCIATED_WITH_INVOICES The order id which applies to the invoices.
+ * @param OFFSET_FROM_ZERO The list of invoices starts with an index of 0.
+ *        This number indicates where the list or subset of invoices should start.
+ * @param NUMBER_OF_INVOICES The number of invoices to include in this list.
  * NOTE: This method is overloaded. Chose the appropriate one for your needs.
  */
 Invoices invoices = bitnet.invoiceService().getInvoices(
@@ -401,73 +403,112 @@ Invoices invoices = bitnet.invoiceService().getInvoices(
 
 ## Refunds
 
-You can initiate either a full refund or partial refund. If you initiate a partial refund, you must specify the amount of money to refund. The invoice must be in a state of PAID or OVERPAID and the payer associated with the order must have a refund payment address present before a refund can be created.
-
-For OVERPAID invoices a mispayment correction can be initiated to return the overpaid amount.
+There are three types of refund: Full, Partial and Mispayment Correction.
 
 ### Full refund
 
-To initiate a full refund, an invoiceId and instruction of FULL must be supplied, along with your Bitnet accountId.
-
 ```java
+/*
+ * Build a RefundCreate object for the full refund.
+ * @param Instruction To initiate a full refund you must set the Refund Instruction to FULL
+ * @param INVOICE_ID The invoice which should be refunded against.
+ * IMPORTANT: The invoice must be in a state of PAID or OVERPAID and the payer associated with the order must have a refund payment address
+ * present before a refund can be created.
+ */
 RefundCreate newRefund = new RefundCreate()
                 .withAccountId(YOUR_BITNET_ACCOUNT_ID)
                 .withInstruction(Refund.Instruction.FULL)
                 .withInvoiceId(INVOICE_ID);
-
+```
+```java
+/*
+ * Call the BITNET service to create the refund.
+ */
 Refund refund = bitnet.refundService().createRefund(newRefund);
 ```
 
 ### Partial Refund
 
-To initiate a partial refund, an invoiceId, an instruction of PARTIAL, currency and amount must be supplied, along with your Bitnet accountId.
-
-The currency supplied in the refund request must match the order pricing currency. The refund amount also must be less than the pricing amount of the order.
-
 ```java
-// Creating a partial refund.
+/*
+ * Build a RefundCreate object for the partial correction refund.
+ * @param Instruction To initiate a partial refund you must set the Refund Instruction to PARTIAL
+ * @param REFUND_AMOUNT The refund amount also must be less than the pricing amount of the order.
+ * @param REFUND_CURRENCY The currency supplied in the refund request must match the order pricing currency.
+ * @param INVOICE_ID The invoice which should be refunded against.
+ * IMPORTANT: The invoice must be in a state of PAID or OVERPAID and the payer associated with the order must have a refund payment address
+ * present before a refund can be created. You must supply the refund amount in these cases.
+ */
 RefundCreate newRefund = new RefundCreate()
                 .withAccountId(YOUR_BITNET_ACCOUNT_ID)
                 .withAmount(REFUND_AMOUNT)
                 .withCurrency(REFUND_CURRENCY)
                 .withInstruction(Refund.Instruction.PARTIAL)
                 .withInvoiceId(INVOICE_ID);
-
+```
+```java
+/*
+ * Now call the BITNET service to create the refund.
+ */
 Refund refund = bitnet.refundService().createRefund(newRefund);
 ```
 
 ### Mispayment Correction refund
 
-To initiate a mispayment correction, an invoiceId and instruction of MISPAYMENT_CORRECTION must be supplied, along with your Bitnet accountId.
+For OVERPAID invoices a mispayment correction can be initiated to return the overpaid amount.
 
 ```java
+/*
+ * Build a RefundCreate object for the mispayment correction refund..
+ * @param Instruction To initiate a mispayment correction refund you must set the Refund Instruction to MISPAYMENT_CORRECTION
+ * @param INVOICE_ID The invoice which should be refunded against.
+ * IMPORTANT: The invoice must be in a state of OVERPAID and the payer associated with the order must have a refund payment address
+ * present before a refund can be created.
+ */
 RefundCreate newRefund = new RefundCreate()
                 .withAccountId(YOUR_BITNET_ACCOUNT_ID)
                 .withInstruction(Refund.Instruction.MISPAYMENT_CORRECTION)
                 .withInvoiceId(INVOICE_ID);
-
+```
+```java
+/*
+ * Now call the BITNET service to create the refund.
+ */
 Refund refund = bitnet.refundService().createRefund(newRefund);
 ```
 
 ### Retrieving Refunds
 
-Refunds can be retrieved individually or as a list. Your accountId must supplied as a query param when retrieving a list.
+Refunds can be retrieved individually:
 
 ```java
-// Get Refund by Id
+/*
+ * Get Refund by Id
+ */
 Refund refund = bitnet.refundService().getRefund(REFUND_ID);
+```
 
-// Getting a list of refunds
-// Set up refund states.
+or as a list:
+
+```java
+/*
+ * Start by building a list with the refund states you are interested in.
+ */
 List<Refund.State> states = new ArrayList<Refund.State>();
 states.add(Refund.State.OPEN);
 
+/*
+ * Call the BITNET service to get a list of refunds.
+ * @param states The list of states you are interested in.
+ * @param OFFSET_FROM_ZERO The list of refunds starts with an index of 0.
+ *        This number indicates where the list or subset of refunds should start.
+ * @param NUMBER_OF_REFUNDS The number of refunds to include in this list.
+ */
 Refunds refunds = bitnet.refundService().getRefunds(
     YOUR_BITNET_ACCOUNT_ID,
-    INVOICE_ID,
     states,
     OFFSET_FROM_ZERO,
-    NUMBER_OF_INVOICES)
+    NUMBER_OF_REFUNDS)
 ```
 
 ## Errors
