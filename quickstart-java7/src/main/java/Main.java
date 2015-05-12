@@ -16,7 +16,6 @@ import io.bitnet.model.payment.order.OrderCreate;
 import io.bitnet.model.payment.order.Orders;
 import io.bitnet.model.refund.refund.Refund;
 import io.bitnet.model.refund.refund.RefundCreate;
-import io.bitnet.model.refund.refund.Requested;
 import io.bitnet.notifications.model.InvoiceNotification;
 import io.bitnet.notifications.model.Notification;
 import io.bitnet.notifications.model.OrderNotification;
@@ -102,7 +101,7 @@ public class Main {
         startNotificationsWebhook();
 
         try {
-            Payer payer = createPayer();
+            Payer payer = createPayer(UUID.randomUUID().toString(), null);
             System.out.println("Created Payer " + payer);
 
             Payer updatedPayer = updatePayer(payer);
@@ -114,13 +113,13 @@ public class Main {
             Order order = createOrder(payer);
             System.out.println("Created Order " + order);
 
-            Orders openOrders = retrieveOpenOrders();
+            Orders openOrders = retrieveOrders(0, 100, Order.State.OPEN);
             System.out.println("Open Orders" + openOrders);
 
             Invoice invoice = createInvoice(order);
             System.out.println("Created Invoice " + invoice);
 
-            Refund refund = createRefund(invoice);
+            Refund refund = createRefund(invoice, Refund.Instruction.FULL);
             System.out.println("Created Refund " + refund);
 
         } catch (BitnetException | BitnetRetryableException | EncodeException e) {
@@ -138,10 +137,15 @@ public class Main {
         closeNotificationsWebhook();
     }
 
-    private static Payer createPayer() {
-       /*
-        * Build a payer address
-        */
+    /**
+     * Build a payer with an address, reference and refund payment address.
+     *
+     * @param reference            This is an unique identifier of your choosing. If you submit two new payers with the same reference you will get a BitnetConflictException.
+     * @param refundPaymentAddress This can be populated at time of creation, or updated at a later date. A refund payment address must be set in order to initiate a refund for a Payer.
+     * @return created payer returned from bitnet service.
+     */
+    private static Payer createPayer(String reference, String refundPaymentAddress) {
+        // Build a default payer address
         Address payerAddress = new Address()
                 .withAddressLine1("9 test street")
                 .withAddressLine2("test avenue")
@@ -150,55 +154,51 @@ public class Main {
                 .withPostalCode("60606")
                 .withCountry(Address.Country.US);
 
-        /*
-         * Build a payer with an address, reference and refund payment address.
-         * @param YOUR_UNIQUE_REFERENCE
-         *
-         * @param REFUND_PAYMENT_ADDRESS
-         *
-         */
+        // Build new payer
         PayerCreate newPayer = new PayerCreate()
                 .withAccountId(ACCOUNT_ID)
                 .withEmail("thePayersEmailAddress@email.com")
-                .withReference(UUID.randomUUID().toString()) // This is an unique identifier of your choosing. If you submit two new payers with the same reference you will get a BitnetConflictException.
-                        //.withRefundPaymentAddress(REFUND_PAYMENT_ADDRESS) This can be populated at time of creation, or updated at a later date. A refund payment address must be set in order to initiate a refund for a Payer.
+                .withReference(reference)
+                        //.withRefundPaymentAddress(refundPaymentAddress)
                 .withAddress(payerAddress);
 
-        /*
-         * Call the BITNET service to create the prayer.
-         */
+        // Calling the BITNET create payer service.
         return bitnet.payerService().createPayer(newPayer);
     }
 
+    /**
+     * Update payers email address.
+     *
+     * @param payer payer to be updated
+     * @return updated payer returned from bitnet service.
+     */
     private static Payer updatePayer(Payer payer) {
-       /* Build a PayerUpdate object.
-        * All payer information, apart from the Payer Id, can be updated.
-        * IMPORTANT: All previous payer information must be supplied, otherwise this
-        *            payer information will be overwritten.
-        */
+        // Build PayerUpdate object - all payer information, apart from the Payer Id, can be updated.
         PayerUpdate payerToUpdate = new PayerUpdate(payer).withEmail("updated@email.com");
 
-        /*
-         * Calling the BITNET update payer service.
-         */
+        // Calling the BITNET update payer service.
         return bitnet.payerService().updatePayer(payerToUpdate, payer.getId());
     }
 
     /**
-     * Calling the BITNET service to get the payer
+     * Retrieve payer for id.
      *
      * @param payerId The id of the payer to be retrieved.
-     * @return the retrieved payer
+     * @return retrieved payer returned from bitnet service.
      */
     private static Payer retrievePayer(String payerId) {
-
+        // Calling the BITNET service to get the payer
         return bitnet.payerService().getPayer(payerId);
     }
 
+    /**
+     * Create new order for payer.
+     *
+     * @param createdPayer payer to create order for
+     * @return created order returned from bitnet service.
+     */
     private static Order createOrder(Payer createdPayer) {
-        /*
-         * Build a list of items.
-         */
+        // Build a list of items.
         List<Item> items = new ArrayList<>();
         items.add(new Item()
                 .withDesc("item 1")
@@ -207,9 +207,7 @@ public class Main {
                 .withQuantity(1)
                 .withSku("sku 1"));
 
-        /*
-         * Build an order object with some items and a description
-         */
+        // Build an order object with some items and a description
         OrderCreate newOrder = new OrderCreate()
                 .withAccountId(ACCOUNT_ID)
                 .withPayerId(createdPayer.getId())
@@ -218,48 +216,60 @@ public class Main {
                 .withDesc("A test order")
                 .withItems(items);
 
-        /*
-         * Call the BITNET service to create the order.
-         */
+        // Call the BITNET service to create the order.
         return bitnet.orderService().createOrder(newOrder);
     }
 
-    private static Orders retrieveOpenOrders() {
-        /*
-         * Call the BITNET service to get a list of orders.
-         * @states The list of states you are interested in.
-         * @OFFSET_FROM_ZERO The list of orders starts with an index of 0.
-         *                   This number indicates where the list or subset of orders should start.
-         * @NUMBER_OF_ORDERS The number of orders to include in this list of orders.
-         */
-        return bitnet.orderService().getOrders(ACCOUNT_ID, asList(Order.State.OPEN), 0, 100);
+    /**
+     * Retrieve a list of open orders.
+     *
+     * @param start  The list of orders starts with an index of 0. This number indicates where the list or subset of orders should start.
+     * @param number The number of orders to include in this list of orders.
+     * @param states The list of states you are interested in.
+     * @return list of open orders return from bitnet service
+     */
+    private static Orders retrieveOrders(int start, int number, Order.State... states) {
+        //Call the BITNET service to get a list of orders.
+        return bitnet.orderService().getOrders(ACCOUNT_ID, asList(states), start, number);
     }
 
+    /**
+     * Create an invoice for an order.
+     * <p/>
+     * Note: An order can only be linked to one invoice.
+     *
+     * @param createdOrder an existing and open order.
+     * @return create invoice returned from bitnet service
+     */
     private static Invoice createInvoice(Order createdOrder) {
-        /*
-         * Build an InvoiceCreate object.
-         * @EXISTING_ORDER_ID The id of an existing and open ORDER.
-         * Note: An order can only be linked to one invoice.
-         */
+        // Build an InvoiceCreate object.
         InvoiceCreate newInvoice = new InvoiceCreate()
                 .withAccountId(ACCOUNT_ID)
                 .withOrderId(createdOrder.getId());
 
-
-        /*
-         * Call the BITNET service to create the invoice.
-         */
+        // Call the BITNET service to create the invoice.
         return bitnet.invoiceService().createInvoice(newInvoice);
     }
 
-    private static Refund createRefund(Invoice createdInvoice) {
+    /**
+     * Create a full refund against an invoice.
+     *
+     * IMPORTANT: The invoice must be in a state of PAID or OVERPAID and
+     * the payer associated with the order must have a refund payment address
+     * present before a refund can be created.
+     *
+     * @param createdInvoice The invoice which should be refunded against.
+     * @param instruction    To initiate a full refund you must set the Refund Instruction to FULL.
+     * @return create refund returned from bitnet service.
+     */
+    private static Refund createRefund(Invoice createdInvoice, Refund.Instruction instruction) {
+        // Build a RefundCreate object for the refund.
         RefundCreate newRefund = new RefundCreate()
                 .withAccountId(ACCOUNT_ID)
-                .withAmount("10.00")
-                .withCurrency(Requested.Currency.BBD)
-                .withInstruction(Refund.Instruction.PARTIAL)
+                .withInstruction(instruction)
                 .withInvoiceId(createdInvoice.getId());
 
+        // Call the BITNET service to create the refund.
         return bitnet.refundService().createRefund(newRefund);
     }
 
@@ -407,7 +417,7 @@ public class Main {
         Refund refund = notification.getNotification().getRefund();
         System.out.format("Refund %s for invoice %s has changed state to %s\n", refund.getId(), refund.getInvoiceId(), refund.getState());
     }
-    
+
     /**
      * Start listening for requests on port.
      *
