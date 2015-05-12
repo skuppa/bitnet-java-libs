@@ -7,6 +7,7 @@ import io.bitnet.core.notifications.BitnetNotificationHelper;
 import io.bitnet.model.payer.payer.Address;
 import io.bitnet.model.payer.payer.Payer;
 import io.bitnet.model.payer.payer.PayerCreate;
+import io.bitnet.model.payer.payer.PayerUpdate;
 import io.bitnet.model.payment.invoice.Invoice;
 import io.bitnet.model.payment.invoice.InvoiceCreate;
 import io.bitnet.model.payment.order.Item;
@@ -46,6 +47,8 @@ import static spark.SparkBase.stop;
  * The application will wait for 5  minutes before shutting down so that some notifications are relieved.
  * <p/>
  * After the example has setup the above it goes on to create a payer, order, invoice before finally attempting to create a refund.
+ * <p/>
+ * See https://github.com/bitnet/bitnet-java-libs for full documentation.
  */
 public class Main {
     // Client id for your bitnet account in selected environment
@@ -99,10 +102,16 @@ public class Main {
 
         Payer payer = createPayer();
         System.out.println("Created Payer " + payer);
+
+        Payer updatedPayer = updatePayer(payer);
+        System.out.println("Updated Payer " + updatedPayer);
+
         Order order = createOrder(payer);
         System.out.println("Created Order " + order);
+
         Invoice invoice = createInvoice(order);
         System.out.println("Created Invoice " + invoice);
+
         Refund refund = createRefund(invoice);
         System.out.println("Created refund " + refund);
 
@@ -143,6 +152,20 @@ public class Main {
          * Call the BITNET service to create the prayer.
          */
         return call(() -> bitnet.payerService().createPayer(newPayer)).orElse(null);
+    }
+
+    private static Payer updatePayer(Payer payer) {
+       /* Build a PayerUpdate object.
+        * All payer information, apart from the Payer Id, can be updated.
+        * IMPORTANT: All previous payer information must be supplied, otherwise this
+        *            payer information will be overwritten.
+        */
+        PayerUpdate payerToUpdate = new PayerUpdate(payer).withEmail("updated@email.com");
+
+        /*
+         * Calling the BITNET update payer service.
+         */
+        return call(() -> bitnet.payerService().updatePayer(payerToUpdate, payer.getId())).orElse(null);
     }
 
     private static Order createOrder(Payer createdPayer) {
