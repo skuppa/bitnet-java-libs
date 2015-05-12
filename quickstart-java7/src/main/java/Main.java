@@ -102,7 +102,6 @@ public class Main {
         startNotificationsWebhook();
 
         try {
-
             Payer payer = createPayer();
             System.out.println("Created Payer " + payer);
 
@@ -122,10 +121,11 @@ public class Main {
             System.out.println("Created Invoice " + invoice);
 
             Refund refund = createRefund(invoice);
-            System.out.println("Created refund " + refund);
+            System.out.println("Created Refund " + refund);
 
         } catch (BitnetException | BitnetRetryableException | EncodeException e) {
             handleBitnetException(e);
+            e.printStackTrace();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -274,33 +274,33 @@ public class Main {
         } catch (BitnetAccessDeniedException e) {
             // Authentication with the Bitnet API failed
             // Check that your Client Id, Secret and Account Id are correct.
-            System.out.println("Access denied:" + e.getMessage());
+            System.out.println("Access denied: " + e.getMessage());
         } catch (BitnetInvalidRequestException e) {
             // The request was invalid
             // This can be due to invalid request formatting and so on.
-            System.out.println("Invalid Request:" + e.getMessage());
+            System.out.println("Invalid Request: " + e.getMessage());
         } catch (BitnetRequestCouldNotBeProcessedException e) {
             // The request could not be processed.
             // An example would be missing required fields.
-            System.out.println("Request could not be processed:" + e.getMessage());
+            System.out.println("Request could not be processed: " + e.getMessage());
         } catch (EncodeException e) {
             // These exceptions may occur as result of the passed object not obeying it's
             // constraints.
-            System.out.println("Unable to encode object:" + e.getMessage());
+            System.out.println("Unable to encode object: " + e.getMessage());
         } catch (BitnetConflictException e) {
             // An example of a conflict would be an attempt to create an entity which already
             // exists. Are you creating a duplicate payer, etc?
-            System.out.println("Conflicting entity:" + e.getMessage());
+            System.out.println("Conflicting entity: " + e.getMessage());
         } catch (BitnetRequestForbiddenException e) {
             // You do not have permission for the requested action.
             // Check that you are using the correct accountId and have the appropriate permissions.
-            System.out.println("Forbidden request:" + e.getMessage());
+            System.out.println("Forbidden request: " + e.getMessage());
         } catch (BitnetResourceNotFoundException e) {
             // Check that the resource you are actioning exists, e.g. is the Payer Id valid?
-            System.out.println("Resource not found:" + e.getMessage());
+            System.out.println("Resource not found: " + e.getMessage());
         } catch (BitnetException e) {
             // This will be thrown for errors when a more specific error cannot be identified.
-            System.out.println("Unknown bitnet exception:" + e.getMessage());
+            System.out.println("Unknown bitnet exception: " + e.getMessage());
         }
     }
 
@@ -426,7 +426,7 @@ public class Main {
 
 
     /**
-     * Start listening for and handling notifications.
+     * Start listening for and handling notifications using spark framework.
      */
     private static void startNotificationsWebhook() {
         post(new Route("/webhook") {
