@@ -349,7 +349,7 @@ InvoiceCreate newInvoice = new InvoiceCreate()
 Invoice invoice = bitnet.invoiceService().createInvoice(newInvoice);
 ```
 
-On successful creation of an invoice, the linked order will be updated to a state of INVOICED. The successfully created Invoice will contain the Bitcoin quote and payment address details.
+On successful creation of an invoice, the linked order will be updated to a state of INVOICED. The created Invoice will contain the Bitcoin quote and payment address details.
 
 ### Updating an Invoice
 
@@ -563,16 +563,27 @@ public void handleBitnetException(RuntimeException exception) {
 }
 ```
 
-## Testing
+## Testing with a custom endpoint
 
-To test against the Bitnet Test API and Testnet you should get the Bitnet test object.  
+If you are testing with a custom Bitnet endpoint you can use the following
 
 ```java
-// Get the object with logging level set to NONE.
-Bitnet bitnetTest = Bitnet.startTest(YOUR_TEST_CLIENT_ID, YOUR_TEST_SECRET);
+/*
+ * Get the bitnet object for a specified endpoint.
+ * @param YOUR_BITNET_CLIENT_ID The Bitnet Client ID provided to you for the specified environment.
+ * @param YOUR_BITNET_SECRET The Bitnet Secret provided to you for the specified environment.
+ * @param ENVIRONMENT The custom endpoint.
+ * @param BLOCKCHAIN The block chain used by the endpoint; most likely TESTNET.
+ * @param LOGGING_LEVEL The desire logging level.
+ * @param unsafeOkHttpClient This allows you to ignore unsafe SSL connections; useful in test.
+ */
+Bitnet bitnet = Bitnet.start(YOUR_BITNET_CLIENT_ID,
+                             YOUR_BITNET_SECRET,
+                             ENVIRONMENT,
+                             BLOCKCHAIN,
+                             LOGGING_LEVEL,
+                             io.bitnet.feign.OkHttpClientProvider.unsafeOkHttpClient());
 
-// Get the object with logging.
-Bitnet bitnetTest = Bitnet.startTest(YOUR_TEST_CLIENT_ID, YOUR_TEST_SECRET, LOGGING_LEVEL);
 ```
 
 ## Advanced Usage
@@ -586,33 +597,7 @@ In this case you should implement:
 * InvoiceService
 * RefundService
 
-## Developer setup
-
-### Prerequisites
-
-To build the client and SDK you will need:
-* Java 7+ installed
-
-```java
-# On OSX or Linux
-./gradlew build -x integrationTest
-
-# On Windows
-gradlew.bat build -x integrationTest
-
-```
-
-The above build will not execute integration tests as they require a valid client account for testing.
-If you have a client account then update either sdk/integrationTest.properties or ~/.bitnet-java-libs/integrationTest.properties with your clientId, secret, environment, accountId, internalClientId and internalSecret
-
-```java
-# On OSX or Linux
-./gradlew build -x integrationTest
-
-# On Windows
-gradlew.bat build -x integrationTest
-
-```
+## About this project
 
 ### Client overview
 
@@ -641,3 +626,36 @@ public Feign.Builder feignBuilder() {
 ```
 
 Using decorators for the Feign encoder and decoder it supports request/response logging, validation, retries and exception handling.
+
+### Building from source
+
+To build the client and SDK you will need:
+* Java 7+ installed
+
+The project is built using Gradle. You do not need Gradle installed as we take advantage of the [Gradle Wrapper](http://gradle.org/docs/current/userguide/gradle_wrapper.html).
+
+Unless you have a valid client account for integration testing you should run the build using the following command:
+
+```java
+# On OSX or Linux
+# Run the build without the integrationTest step.
+./gradlew build -x integrationTest
+
+# On Windows
+# Run the build without the integrationTest step.
+gradlew.bat build -x integrationTest
+
+```
+
+If you have a client account then update either sdk/integrationTest.properties or ~/.bitnet-java-libs/integrationTest.properties with your clientId, secret, environment, accountId, internalClientId and internalSecret
+
+```java
+# On OSX or Linux.
+# Run the full build.
+./gradlew build
+
+# On Windows
+# Run the full build.
+gradlew.bat build
+
+```
