@@ -51,9 +51,11 @@ And add the bitnet-java-sdk with the latest version as follows.
 
 ```javascript
 dependencies {
-    compile 'io.bitnet:bitnet-java-sdk:0.1.20-alpha'
+    compile 'io.bitnet:bitnet-java-sdk:<current-version>'
 }
 ```
+
+where the current version can be found in [jCenter](https://dl.bintray.com/bitnet/maven/io/bitnet/bitnet-java-sdk/).
 
 #### Maven
 
@@ -74,10 +76,13 @@ And add the bitnet-java-sdk with the latest version as follows.
     <dependency>
         <groupId>io.bitnet</groupId>
         <artifactId>bitnet-java-sdk</artifactId>
-        <version>0.1.20-alpha</version>
+        <version><current-version></version>
     </dependency>
 </dependencies>
 ```
+
+where the current version can be found in [jCenter](https://dl.bintray.com/bitnet/maven/io/bitnet/bitnet-java-sdk/).
+
 #### The Bitnet Object
 
 All Bitnet services can be accessed through the Bitnet object. You can obtain an instance of the object as follows:
