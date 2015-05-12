@@ -226,7 +226,53 @@ public class Main {
             System.out.println("Unknown bitnet exception: " + e.getMessage());
         }
     }
+    
+    private static void waitFor(int interval, TimeUnit units) {
+        Uninterruptibles.sleepUninterruptibly(interval, units);
+    }
 
+    private static void startListeningOnPort(int port) {
+        setPort(port);
+    }
+
+    public static void closeNotificationsWebhook() {
+        System.exit(0);
+    }
+
+    /**
+     * Start listening for and handling notifications using spark framework.
+     */
+    private static void startNotificationsWebhook() {
+        post(new Route("/webhook") {
+            @Override
+            public Object handle(Request request, Response response) {
+                Map headers = new ImmutableMap.Builder<String, String>()
+                        .put("Digest", request.headers("Digest"))
+                        .put("Date", request.headers("Date"))
+                        .put("Authorization", request.headers("Authorization"))
+                        .build();
+                if (notificationHelper.isVerifiedNotification(headers, request.body())) {
+                    return handleNotification(request);
+                } else {
+                    return badRequestResponse(request, response, headers);
+                }
+            }
+        });
+
+    }
+
+    /**
+     * Respond to request indicating that the response is bad.
+     *
+     * @param request  request object
+     * @param response response object
+     * @param headers  map of headers
+     * @return body of response
+     */
+    private static Object badRequestResponse(Request request, Response response, Map headers) {
+        response.status(400);
+        return notificationHelper.rejectNotificationReason(headers, request.body());
+    }
 
     /**
      * Process notifications and handle as appropriate.
@@ -255,118 +301,30 @@ public class Main {
         return "Notification received";
     }
 
-    /**
-     * Respond to request indicating that the response is bad.
-     *
-     * @param request  request object
-     * @param response response object
-     * @param headers  map of headers
-     * @return body of response
-     */
-    private static Object badRequestResponse(Request request, Response response, Map headers) {
-        response.status(400);
-        return notificationHelper.rejectNotificationReason(headers, request.body());
-    }
-
-    /**
-     * Wait for a period of time before continuing.
-     *
-     * @param interval interval to wait for
-     * @param units    unit of interval
-     */
-    private static void waitFor(int interval, TimeUnit units) {
-        Uninterruptibles.sleepUninterruptibly(interval, units);
-    }
-
-    /**
-     * Handles invoice expired event.
-     *
-     * @param notification invoice notification
-     */
     private static void handleInvoiceExpired(Notification<InvoiceNotification> notification) {
         Invoice invoice = notification.getNotification().getInvoice();
         System.out.format("Invoice %s for order %s has expired with %s received\n", invoice.getId(), invoice.getOrderId(), invoice.getAmountReceived());
     }
 
-
-    /**
-     * Handles invoice payment received event.
-     *
-     * @param notification invoice notification
-     */
     private static void handleInvoicePaymentReceived(Notification<InvoiceNotification> notification) {
         Invoice invoice = notification.getNotification().getInvoice();
         System.out.format("Invoice %s for order %s has received a payment, so far %s has been received\n", invoice.getId(), invoice.getOrderId(), invoice.getAmountReceived());
     }
 
 
-    /**
-     * Handles invoice state change event.
-     *
-     * @param notification invoice notification
-     */
     private static void handleInvoiceStateChange(Notification<InvoiceNotification> notification) {
         Invoice invoice = notification.getNotification().getInvoice();
         System.out.format("Invoice %s for order %s has changed state to %s\n", invoice.getId(), invoice.getOrderId(), invoice.getState());
     }
 
 
-    /**
-     * Handles order state change event.
-     *
-     * @param notification order notification
-     */
     private static void handleOrderStateChange(Notification<OrderNotification> notification) {
         Order order = notification.getNotification().getOrder();
         System.out.format("Order %s has changed state to %s\n", order.getId(), order.getState());
     }
 
-    /**
-     * Handles refund state change event.
-     *
-     * @param notification refund notification
-     */
     private static void handleRefundStateChange(Notification<RefundNotification> notification) {
         Refund refund = notification.getNotification().getRefund();
         System.out.format("Refund %s for invoice %s has changed state to %s\n", refund.getId(), refund.getInvoiceId(), refund.getState());
-    }
-
-    /**
-     * Start listening for requests on port.
-     *
-     * @param port to listen on for requests
-     */
-    private static void startListeningOnPort(int port) {
-        setPort(port);
-    }
-
-    /**
-     * Stop listening for web hook notifications.
-     */
-    public static void closeNotificationsWebhook() {
-        System.exit(0);
-    }
-
-
-    /**
-     * Start listening for and handling notifications using spark framework.
-     */
-    private static void startNotificationsWebhook() {
-        post(new Route("/webhook") {
-            @Override
-            public Object handle(Request request, Response response) {
-                Map headers = new ImmutableMap.Builder<String, String>()
-                        .put("Digest", request.headers("Digest"))
-                        .put("Date", request.headers("Date"))
-                        .put("Authorization", request.headers("Authorization"))
-                        .build();
-                if (notificationHelper.isVerifiedNotification(headers, request.body())) {
-                    return handleNotification(request);
-                } else {
-                    return badRequestResponse(request, response, headers);
-                }
-            }
-        });
-
     }
 }
