@@ -54,6 +54,7 @@ task checkRAMLBuild() {
 
 task updateRAMLBuild() {
     doLast {
+        def latest = latestDevRAML()
         updateBuildAgainstRAML(latest)
     }
 }

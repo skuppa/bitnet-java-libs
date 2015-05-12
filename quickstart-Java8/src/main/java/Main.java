@@ -106,6 +106,9 @@ public class Main {
         Payer updatedPayer = updatePayer(payer);
         System.out.println("Updated Payer " + updatedPayer);
 
+        Payer retrievedPayer = retrievePayer(payer.getId());
+
+
         Order order = createOrder(payer);
         System.out.println("Created Order " + order);
 
@@ -166,6 +169,17 @@ public class Main {
          * Calling the BITNET update payer service.
          */
         return call(() -> bitnet.payerService().updatePayer(payerToUpdate, payer.getId())).orElse(null);
+    }
+
+    /**
+     * Calling the BITNET service to get the payer
+     *
+     * @param payerId The id of the payer to be retrieved.
+     * @return the retrieved payer
+     */
+    private static Payer retrievePayer(String payerId) {
+
+        return call(() -> bitnet.payerService().getPayer(payerId)).orElse(null);
     }
 
     private static Order createOrder(Payer createdPayer) {
