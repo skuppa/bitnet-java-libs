@@ -39,7 +39,7 @@ import static spark.Spark.setPort;
  * The bitnet notification helper is used to verify that notifications are valid and verified to be generated using your subscriptions key id and secret.
  * <p/>
  * Sparkframework http://www.sparkjava.com is used to create a endpoint at http://127.0.0.1:8888/webhook for receiving notifications.
- * N.B. If you are running this behind a firewall consider using http://ngrok.com to tunnel.
+ * N.B. If you are running this behind a firewall consider using http://ngrok.com to tunnel notifications.
  * The application will wait for 5  minutes before shutting down so that some notifications are relieved.
  * <p/>
  * After the example has setup the above it goes on to create a payer, order, invoice before finally attempting to create a refund.
@@ -88,9 +88,7 @@ public class Main {
                 invoiceSubscriptionCredentials(INVOICE_NOTIFICATION_SUBSCRIPTION_KEY_ID, INVOICE_NOTIFICATION_SUBSCRIPTION_SECRET),
                 refundSubscriptionCredentials(REFUND_NOTIFICATION_SUBSCRIPTION_KEY_ID, REFUND_NOTIFICATION_SUBSCRIPTION_SECRET));
 
-        // Opens port 8888 to start listening to requests.
         startListeningOnPort(8888);
-
         // Registered to receive webhooks on 127.0.0.1:8888/webhook
         startNotificationsWebhook();
 
@@ -118,7 +116,6 @@ public class Main {
             e.printStackTrace();
         }
 
-
         // Wait for 5 minutes so all notification are received before ending program.
         System.out.println("Waiting for notification events for 5 minutes");
         waitFor(5, MINUTES);
@@ -136,7 +133,6 @@ public class Main {
 
         return bitnet.payerService().createPayer(newPayer);
     }
-
 
     /**
      * Create a new order.
@@ -226,7 +222,7 @@ public class Main {
             System.out.println("Unknown bitnet exception: " + e.getMessage());
         }
     }
-    
+
     private static void waitFor(int interval, TimeUnit units) {
         Uninterruptibles.sleepUninterruptibly(interval, units);
     }
@@ -235,7 +231,7 @@ public class Main {
         setPort(port);
     }
 
-    public static void closeNotificationsWebhook() {
+    private static void closeNotificationsWebhook() {
         System.exit(0);
     }
 
@@ -311,12 +307,10 @@ public class Main {
         System.out.format("Invoice %s for order %s has received a payment, so far %s has been received\n", invoice.getId(), invoice.getOrderId(), invoice.getAmountReceived());
     }
 
-
     private static void handleInvoiceStateChange(Notification<InvoiceNotification> notification) {
         Invoice invoice = notification.getNotification().getInvoice();
         System.out.format("Invoice %s for order %s has changed state to %s\n", invoice.getId(), invoice.getOrderId(), invoice.getState());
     }
-
 
     private static void handleOrderStateChange(Notification<OrderNotification> notification) {
         Order order = notification.getNotification().getOrder();
