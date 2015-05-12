@@ -24,3 +24,9 @@ io.bitnet.model.refund.refund.Refunds:
     public List<Refund> getRefunds() {
         return _embedded == null || size == 0 ? Collections.<Refund>emptyList() : _embedded.getRefunds();
     }
+io.bitnet.model.payer.payer.PayerUpdate:
+    methods: |
+       public PayerUpdate(Payer payer) {
+           org.modelmapper.ModelMapper modelMapper = new org.modelmapper.ModelMapper();
+           modelMapper.map(payer, this);
+       }

@@ -3,6 +3,8 @@
  */
 package io.bitnet.model;
 
+import io.bitnet.model.payer.payer.Payer;
+import io.bitnet.model.payer.payer.PayerUpdate;
 import io.bitnet.model.payment.invoice.Invoice;
 import io.bitnet.model.payment.invoice.Invoices;
 import io.bitnet.model.payment.order.Order;
@@ -57,6 +59,16 @@ public class AdditionalMethodsTest {
     public void shouldRetrieveEmptyRefunds() {
         assertThat(requestRefunds().getRefunds(), is(empty()));
         assertThat(requestRefundsWithSize(0, refunds).getRefunds(), is(empty()));
+    }
+
+    @Test
+    public void shouldCopyPayerPropertiesToPayerUpdateObject() {
+        Payer payer = new Payer().withFirstName("Bob").withLastName("Jenkins").withEmail("bob@bill.com");
+        PayerUpdate payerUpdate = new PayerUpdate(payer);
+
+        assertThat(payerUpdate.getFirstName(), is(equalTo(payer.getFirstName())));
+        assertThat(payerUpdate.getLastName(), is(equalTo(payer.getLastName())));
+        assertThat(payerUpdate.getEmail(), is(equalTo(payer.getEmail())));
     }
 
     private Orders requestOrders(Order... orders) {

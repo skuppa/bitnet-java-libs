@@ -121,7 +121,7 @@ public class PayerServiceTest {
     public void shouldUpdatePayer() {
         Payer createdPayer = createNewPayer();
 
-        PayerUpdate payerToUpdate = new PayerUpdate()
+        PayerUpdate payerToUpdate = new PayerUpdate(new Payer())
                 .withReference(getRandomId())
                 .withAddress(createdPayer.getAddress())
                 .withFirstName("BillyUpdate")
@@ -152,7 +152,7 @@ public class PayerServiceTest {
 
     @Test
     public void shouldGetBitnetResourceNotFoundExceptionWhenUpdatingPayerWhichDoesNotExist() {
-        PayerUpdate payerToUpdate = new PayerUpdate().withEmail("blah@gmail.com");
+        PayerUpdate payerToUpdate = new PayerUpdate(new Payer()).withEmail("blah@gmail.com");
 
         try {
             target.updatePayer(payerToUpdate, getRandomId());

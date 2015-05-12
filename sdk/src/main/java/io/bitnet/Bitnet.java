@@ -115,6 +115,12 @@ public class Bitnet implements BitnetServiceProvider {
         return serviceProvider.refundService();
     }
 
+    /**
+     * Configure instance of BitnetNotificationHelper with subscription credentials.
+     *
+     * @param subscriptions list of subscription credentials
+     * @return configured notification helper.
+     */
     public static BitnetNotificationHelper notificationHelper(NotificationSubscription... subscriptions) {
         return new BitnetNotificationHelper(subscriptions);
     }

@@ -11,7 +11,9 @@ String addAdditionalMethod(String source, def checkConfig) {
     def methods = checkConfig.methods.readLines().collect { line -> "    ${line}" }.join("\n")
     def imports = checkConfig.imports
 
-    source = source.replaceAll(/(?m)(import.*(?!.*\nimport))/, "\$1\n" + imports)
+    if (imports) {
+        source = source.replaceAll(/(?m)(import.*(?!.*\nimport))/, "\$1\n" + imports)
+    }
     source = source.replaceAll(/(?m)\}\n?(?![\f\n\r])\u0024/, "\n" + methods + "\n}\n")
 
     return source
