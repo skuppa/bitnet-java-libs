@@ -28,7 +28,7 @@ You can either take a look at the quick start example [project](https://github.c
 
 ### Quick Start
 
-There is an example project in [Java 7]() or [Java 8](https://github.com/bitnet/bitnet-java-libs/tree/master/quickstart-Java8) which you can use to get up and running with the SDK immediately. This demonstrates how to set up the SDK and get started making calls to the Bitnet platform.
+There is an example project in [Java 7](https://github.com/bitnet/bitnet-java-libs/tree/master/quickstart-java7) or [Java 8](https://github.com/bitnet/bitnet-java-libs/tree/master/quickstart-Java8) which you can use to get up and running with the SDK immediately. This demonstrates how to set up the SDK and get started making calls to the Bitnet platform.
 
 ### Adding Dependencies
 
@@ -349,7 +349,7 @@ InvoiceCreate newInvoice = new InvoiceCreate()
 Invoice invoice = bitnet.invoiceService().createInvoice(newInvoice);
 ```
 
-On successful creation of an invoice, the linked order will be updated to a state of INVOICED.
+On successful creation of an invoice, the linked order will be updated to a state of INVOICED. The successfully created Invoice will contain the Bitcoin quote and payment address details.
 
 ### Updating an Invoice
 
