@@ -21,15 +21,15 @@ import io.bitnet.notifications.model.InvoiceNotification;
 import io.bitnet.notifications.model.Notification;
 import io.bitnet.notifications.model.OrderNotification;
 import io.bitnet.notifications.model.RefundNotification;
-import org.apache.commons.lang3.StringUtils;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import spark.Spark;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import static io.bitnet.core.notifications.NotificationSubscription.*;
 import static java.util.Arrays.asList;
@@ -80,8 +80,6 @@ public class Main {
 
 
     public static void main(String... args) {
-        checkPreconditions();
-
         // To connect to production you would use:
         //bitnet = Bitnet.start(CLIENT_ID, SECRET);
 
@@ -103,26 +101,35 @@ public class Main {
         // Registered to receive webhooks on 127.0.0.1:8888/webhook
         startNotificationsWebhook();
 
-        Payer payer = createPayer();
-        System.out.println("Created Payer " + payer);
+        try {
 
-        Payer updatedPayer = updatePayer(payer);
-        System.out.println("Updated Payer " + updatedPayer);
+            Payer payer = createPayer();
+            System.out.println("Created Payer " + payer);
 
-        Payer retrievedPayer = retrievePayer(payer.getId());
-        System.out.println("Retrieved Payer" + retrievedPayer);
+            Payer updatedPayer = updatePayer(payer);
+            System.out.println("Updated Payer " + updatedPayer);
 
-        Order order = createOrder(payer);
-        System.out.println("Created Order " + order);
+            Payer retrievedPayer = retrievePayer(payer.getId());
+            System.out.println("Retrieved Payer" + retrievedPayer);
 
-        Orders openOrders = retrieveOpenOrders();
-        System.out.println("Open Orders" + openOrders);
+            Order order = createOrder(payer);
+            System.out.println("Created Order " + order);
 
-        Invoice invoice = createInvoice(order);
-        System.out.println("Created Invoice " + invoice);
+            Orders openOrders = retrieveOpenOrders();
+            System.out.println("Open Orders" + openOrders);
 
-        Refund refund = createRefund(invoice);
-        System.out.println("Created refund " + refund);
+            Invoice invoice = createInvoice(order);
+            System.out.println("Created Invoice " + invoice);
+
+            Refund refund = createRefund(invoice);
+            System.out.println("Created refund " + refund);
+
+        } catch (BitnetException | BitnetRetryableException | EncodeException e) {
+            handleBitnetException(e);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
 
 
         // Wait for 5 minutes so all notification are received before ending program.
@@ -160,15 +167,7 @@ public class Main {
         /*
          * Call the BITNET service to create the prayer.
          */
-        try {
-            return bitnet.payerService().createPayer(newPayer);
-        } catch (BitnetException | BitnetRetryableException | EncodeException e) {
-            handleBitnetException(e);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+        return bitnet.payerService().createPayer(newPayer);
     }
 
     private static Payer updatePayer(Payer payer) {
@@ -182,15 +181,7 @@ public class Main {
         /*
          * Calling the BITNET update payer service.
          */
-        try {
-            return bitnet.payerService().updatePayer(payerToUpdate, payer.getId());
-        } catch (BitnetException | BitnetRetryableException | EncodeException e) {
-            handleBitnetException(e);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+        return bitnet.payerService().updatePayer(payerToUpdate, payer.getId());
     }
 
     /**
@@ -201,23 +192,10 @@ public class Main {
      */
     private static Payer retrievePayer(String payerId) {
 
-        try {
-            return bitnet.payerService().getPayer(payerId);
-        } catch (BitnetException | BitnetRetryableException | EncodeException e) {
-            handleBitnetException(e);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+        return bitnet.payerService().getPayer(payerId);
     }
 
     private static Order createOrder(Payer createdPayer) {
-        if (createdPayer == null) {
-            System.out.println("Unable to create order for null payer.");
-            return null;
-        }
-
         /*
          * Build a list of items.
          */
@@ -243,15 +221,7 @@ public class Main {
         /*
          * Call the BITNET service to create the order.
          */
-        try {
-            return bitnet.orderService().createOrder(newOrder);
-        } catch (BitnetException | BitnetRetryableException | EncodeException e) {
-            handleBitnetException(e);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+        return bitnet.orderService().createOrder(newOrder);
     }
 
     private static Orders retrieveOpenOrders() {
@@ -262,23 +232,10 @@ public class Main {
          *                   This number indicates where the list or subset of orders should start.
          * @NUMBER_OF_ORDERS The number of orders to include in this list of orders.
          */
-        try {
-            return bitnet.orderService().getOrders(ACCOUNT_ID, asList(Order.State.OPEN), 0, 100);
-        } catch (BitnetException | BitnetRetryableException | EncodeException e) {
-            handleBitnetException(e);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+        return bitnet.orderService().getOrders(ACCOUNT_ID, asList(Order.State.OPEN), 0, 100);
     }
 
     private static Invoice createInvoice(Order createdOrder) {
-        if (createdOrder == null) {
-            System.out.println("Unable to create invoice for null order.");
-            return null;
-        }
-
         /*
          * Build an InvoiceCreate object.
          * @EXISTING_ORDER_ID The id of an existing and open ORDER.
@@ -292,37 +249,18 @@ public class Main {
         /*
          * Call the BITNET service to create the invoice.
          */
-        try {
-            return bitnet.invoiceService().createInvoice(newInvoice);
-        } catch (BitnetException | BitnetRetryableException | EncodeException e) {
-            handleBitnetException(e);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+        return bitnet.invoiceService().createInvoice(newInvoice);
     }
 
     private static Refund createRefund(Invoice createdInvoice) {
-        if (createdInvoice == null) {
-            System.out.println("Unable to create refund for null invoice.");
-            return null;
-        }
+        RefundCreate newRefund = new RefundCreate()
+                .withAccountId(ACCOUNT_ID)
+                .withAmount("10.00")
+                .withCurrency(Requested.Currency.BBD)
+                .withInstruction(Refund.Instruction.PARTIAL)
+                .withInvoiceId(createdInvoice.getId());
 
-        try {
-            return bitnet.refundService().createRefund(new RefundCreate()
-                    .withAccountId(ACCOUNT_ID)
-                    .withAmount("10.00")
-                    .withCurrency(Requested.Currency.BBD)
-                    .withInstruction(Refund.Instruction.PARTIAL)
-                    .withInvoiceId(createdInvoice.getId()));
-        } catch (BitnetException | BitnetRetryableException | EncodeException e) {
-            handleBitnetException(e);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return null;
+        return bitnet.refundService().createRefund(newRefund);
     }
 
     /**
@@ -336,57 +274,36 @@ public class Main {
         } catch (BitnetAccessDeniedException e) {
             // Authentication with the Bitnet API failed
             // Check that your Client Id, Secret and Account Id are correct.
-            System.out.println("Access denied");
+            System.out.println("Access denied:" + e.getMessage());
         } catch (BitnetInvalidRequestException e) {
             // The request was invalid
             // This can be due to invalid request formatting and so on.
-            System.out.println("Invalid Request");
+            System.out.println("Invalid Request:" + e.getMessage());
         } catch (BitnetRequestCouldNotBeProcessedException e) {
             // The request could not be processed.
             // An example would be missing required fields.
-            System.out.println("Request could not be processed");
+            System.out.println("Request could not be processed:" + e.getMessage());
         } catch (EncodeException e) {
             // These exceptions may occur as result of the passed object not obeying it's
             // constraints.
-            System.out.println("Unable to encode object");
+            System.out.println("Unable to encode object:" + e.getMessage());
         } catch (BitnetConflictException e) {
             // An example of a conflict would be an attempt to create an entity which already
             // exists. Are you creating a duplicate payer, etc?
-            System.out.println("Conflicting entity");
+            System.out.println("Conflicting entity:" + e.getMessage());
         } catch (BitnetRequestForbiddenException e) {
             // You do not have permission for the requested action.
             // Check that you are using the correct accountId and have the appropriate permissions.
-            System.out.println("Forbidden request");
+            System.out.println("Forbidden request:" + e.getMessage());
         } catch (BitnetResourceNotFoundException e) {
             // Check that the resource you are actioning exists, e.g. is the Payer Id valid?
-            System.out.println("Resource not found");
+            System.out.println("Resource not found:" + e.getMessage());
         } catch (BitnetException e) {
             // This will be thrown for errors when a more specific error cannot be identified.
-            System.out.println("Unknown bitnet exception");
+            System.out.println("Unknown bitnet exception:" + e.getMessage());
         }
     }
 
-    /**
-     * Start listening for and handling notifications.
-     */
-    private static void startNotificationsWebhook() {
-        post(new Route("/webhook") {
-            @Override
-            public Object handle(Request request, Response response) {
-                Map headers = new ImmutableMap.Builder<String, String>()
-                        .put("Digest", request.headers("Digest"))
-                        .put("Date", request.headers("Date"))
-                        .put("Authorization", request.headers("Authorization"))
-                        .build();
-                if (notificationHelper.isVerifiedNotification(headers, request.body())) {
-                    return handleNotification(request);
-                } else {
-                    return badRequestResponse(request, response, headers);
-                }
-            }
-        });
-
-    }
 
     /**
      * Process notifications and handle as appropriate.
@@ -437,23 +354,6 @@ public class Main {
     private static void waitFor(int interval, TimeUnit units) {
         Uninterruptibles.sleepUninterruptibly(interval, units);
     }
-
-    /**
-     * Start listening for requests on port.
-     *
-     * @param port to listen on for requests
-     */
-    private static void startListeningOnPort(int port) {
-        setPort(port);
-    }
-
-    /**
-     * Stop listening for web hook notifications.
-     */
-    public static void closeNotificationsWebhook() {
-        System.exit(0);
-    }
-
 
     /**
      * Handles invoice expired event.
@@ -507,13 +407,43 @@ public class Main {
         Refund refund = notification.getNotification().getRefund();
         System.out.format("Refund %s for invoice %s has changed state to %s\n", refund.getId(), refund.getInvoiceId(), refund.getState());
     }
+    
+    /**
+     * Start listening for requests on port.
+     *
+     * @param port to listen on for requests
+     */
+    private static void startListeningOnPort(int port) {
+        setPort(port);
+    }
 
     /**
-     * Check that mandatory constants are populated.
+     * Stop listening for web hook notifications.
      */
-    private static void checkPreconditions() {
-        if (StringUtils.isBlank(CLIENT_ID) || StringUtils.isBlank(ACCOUNT_ID) || StringUtils.isBlank(SECRET)) {
-            throw new RuntimeException("Unable to start bitnet sdk due to missing credentials, please update constants in Main class");
-        }
+    public static void closeNotificationsWebhook() {
+        System.exit(0);
+    }
+
+
+    /**
+     * Start listening for and handling notifications.
+     */
+    private static void startNotificationsWebhook() {
+        post(new Route("/webhook") {
+            @Override
+            public Object handle(Request request, Response response) {
+                Map headers = new ImmutableMap.Builder<String, String>()
+                        .put("Digest", request.headers("Digest"))
+                        .put("Date", request.headers("Date"))
+                        .put("Authorization", request.headers("Authorization"))
+                        .build();
+                if (notificationHelper.isVerifiedNotification(headers, request.body())) {
+                    return handleNotification(request);
+                } else {
+                    return badRequestResponse(request, response, headers);
+                }
+            }
+        });
+
     }
 }
