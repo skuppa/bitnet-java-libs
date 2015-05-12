@@ -28,7 +28,7 @@ You can either take a look at the quick start example [project](https://github.c
 
 ### Quick Start
 
-There is an [example project](https://github.com/bitnet/bitnet-java-libs/tree/master/example) which you can use to get up and running with the SDK immediately. This demonstrates how to set up the SDK and get started making calls to the Bitnet platform.
+There is an example project in [Java 7]() or [Java 8](https://github.com/bitnet/bitnet-java-libs/tree/master/quickstart-Java8) which you can use to get up and running with the SDK immediately. This demonstrates how to set up the SDK and get started making calls to the Bitnet platform.
 
 ### Adding Dependencies
 
@@ -41,7 +41,7 @@ To add the Bitnet SDK to a Gradle project make sure jCenter is listed within the
 ```javascript
 repositories {
     mavenCentral()
-    maven { //TODO: Replace with jCentre when available
+    maven {
         url "https://dl.bintray.com/bitnet/maven/"
     }
 }
@@ -97,7 +97,7 @@ or for the test environment:
 /*
  * Get an instance of the Bitnet object to provide access to Bitnet test services.
  * @param YOUR_BITNET_CLIENT_ID The client id given to you by Bitnet for the current environment.
- * @param YOUR_BITNET_SECRET The secret given to you by Bitnet for the current environment
+ * @param YOUR_BITNET_SECRET The secret given to you by Bitnet for the current environment.
  */
 Bitnet binet = Bitnet.startTest(YOUR_BITNET_CLIENT_ID, YOUR_BITNET_SECRET)
 ```
@@ -137,7 +137,7 @@ or an example with address, reference and refund payment address:
 
 ```java
 /*
- * Build a payer address
+ * Build a payer address.
  */
 Address payerAddress = new Address()
                 .withAddressLine1("9 test street")
@@ -168,7 +168,7 @@ Now call the Bitnet service to create the Payer:
 ```java
 
 /*
- * Calling the BITNET create payer service with a payer object
+ * Calling the BITNET create payer service with a payer object.
  */
 Payer payer = bitnet.payerService().createPayer(newPayer);
 ```
@@ -204,7 +204,7 @@ Payer updatedPayer = bitnet.payerService().updatePayer(payerToUpdate, PAYER_ID);
 
 ```java
 /*
- * Calling the BITNET service to get the payer
+ * Calling the BITNET service to get the payer.
  * @param PAYER_ID The id of the payer to be retrieved.
  */
 Payer payer = bitnet.payerService().getPayer(PAYER_ID);
@@ -216,7 +216,7 @@ Once you have a Payer you can create an order.
 
 ```java
 /*
- * Build an order object with minimal required info
+ * Build an order object with minimal required info.
  * @param EXISTING_PAYER_ID The existing payer id which should be tied to this order.
  *        A payer may be linked to multiple orders.
  * @param THE_CURRENCY_SPECIFIED_IN_YOUR_ORDER This is the currency that has been used in
@@ -248,7 +248,7 @@ items.add(new Item()
             .withSku("sku 1"));
 
 /*
- * Build an order object with some items and a description
+ * Build an order object with some items and a description.
  */
 OrderCreate newOrder = new OrderCreate()
                     .withAccountId(YOUR_BITNET_ACCOUNT_ID)
@@ -392,7 +392,7 @@ states.add(Invoice.State.PAID);
  * @param OFFSET_FROM_ZERO The list of invoices starts with an index of 0.
  *        This number indicates where the list or subset of invoices should start.
  * @param NUMBER_OF_INVOICES The number of invoices to include in this list.
- * NOTE: This method is overloaded. Chose the appropriate one for your needs.
+ * NOTE: This method is overloaded. Choose the appropriate one for your needs.
  */
 Invoices invoices = bitnet.invoiceService().getInvoices(
     YOUR_BITNET_ACCOUNT_ID,
@@ -411,7 +411,7 @@ There are three types of refund: Full, Partial and Mispayment Correction.
 ```java
 /*
  * Build a RefundCreate object for the full refund.
- * @param Instruction To initiate a full refund you must set the Refund Instruction to FULL
+ * @param Instruction To initiate a full refund you must set the Refund Instruction to FULL.
  * @param INVOICE_ID The invoice which should be refunded against.
  * IMPORTANT: The invoice must be in a state of PAID or OVERPAID and
  *            the payer associated with the order must have a refund payment address
@@ -435,15 +435,15 @@ Refund refund = bitnet.refundService().createRefund(newRefund);
 /*
  * Build a RefundCreate object for the partial correction refund.
  * @param Instruction To initiate a partial refund you must set the Refund
- *        Instruction to PARTIAL
+ *        Instruction to PARTIAL.
  * @param REFUND_AMOUNT The refund amount also must be less than the pricing amount
  *        of the order.
  * @param REFUND_CURRENCY The currency supplied in the refund request must match
  *        the order pricing currency.
  * @param INVOICE_ID The invoice which should be refunded against.
  * IMPORTANT: The invoice must be in a state of PAID or OVERPAID and the payer associated
- * with the order must have a refund payment address present before a refund can be
- * created. You must supply the refund amount in these cases.
+ *            with the order must have a refund payment address present before a refund can be
+ *            created. You must supply the refund amount in these cases.
  */
 RefundCreate newRefund = new RefundCreate()
                 .withAccountId(YOUR_BITNET_ACCOUNT_ID)
