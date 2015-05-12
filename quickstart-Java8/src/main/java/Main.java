@@ -13,6 +13,7 @@ import io.bitnet.model.payment.invoice.InvoiceCreate;
 import io.bitnet.model.payment.order.Item;
 import io.bitnet.model.payment.order.Order;
 import io.bitnet.model.payment.order.OrderCreate;
+import io.bitnet.model.payment.order.Orders;
 import io.bitnet.model.refund.refund.Refund;
 import io.bitnet.model.refund.refund.RefundCreate;
 import io.bitnet.model.refund.refund.Requested;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static io.bitnet.core.notifications.NotificationSubscription.*;
+import static java.util.Arrays.asList;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static spark.Spark.post;
 import static spark.SparkBase.port;
@@ -107,10 +109,13 @@ public class Main {
         System.out.println("Updated Payer " + updatedPayer);
 
         Payer retrievedPayer = retrievePayer(payer.getId());
-
+        System.out.println("Retrieved Payer" + retrievedPayer);
 
         Order order = createOrder(payer);
         System.out.println("Created Order " + order);
+
+        Orders openOrders = retrieveOpenOrders();
+        System.out.println("Open Orders" + openOrders);
 
         Invoice invoice = createInvoice(order);
         System.out.println("Created Invoice " + invoice);
@@ -139,16 +144,16 @@ public class Main {
 
         /*
          * Build a payer with an address, reference and refund payment address.
-         * @param YOUR_UNIQUE_REFERENCE This is an unique identifier of your choosing.
-         *        If you submit two new payers with the same reference you will get a BitnetConflictException.
-         * @param REFUND_PAYMENT_ADDRESS This can be populated at time of creation, or
-         *        updated at a later date. A refund payment address must be set in order to initiate a refund for a Payer.
+         * @param YOUR_UNIQUE_REFERENCE
+         *
+         * @param REFUND_PAYMENT_ADDRESS
+         *
          */
         PayerCreate newPayer = new PayerCreate()
                 .withAccountId(ACCOUNT_ID)
                 .withEmail("thePayersEmailAddress@email.com")
-                .withReference(UUID.randomUUID().toString()) // A random reference Id
-                        //.withRefundPaymentAddress(REFUND_PAYMENT_ADDRESS)
+                .withReference(UUID.randomUUID().toString()) // This is an unique identifier of your choosing. If you submit two new payers with the same reference you will get a BitnetConflictException.
+                        //.withRefundPaymentAddress(REFUND_PAYMENT_ADDRESS) This can be populated at time of creation, or updated at a later date. A refund payment address must be set in order to initiate a refund for a Payer.
                 .withAddress(payerAddress);
 
         /*
@@ -214,6 +219,17 @@ public class Main {
          * Call the BITNET service to create the order.
          */
         return call(() -> bitnet.orderService().createOrder(newOrder)).orElse(null);
+    }
+
+    private static Orders retrieveOpenOrders() {
+        /*
+         * Call the BITNET service to get a list of orders.
+         * @states The list of states you are interested in.
+         * @OFFSET_FROM_ZERO The list of orders starts with an index of 0.
+         *                   This number indicates where the list or subset of orders should start.
+         * @NUMBER_OF_ORDERS The number of orders to include in this list of orders.
+         */
+        return call(() -> bitnet.orderService().getOrders(ACCOUNT_ID, asList(Order.State.OPEN), 0, 100)).orElse(null);
     }
 
     private static Invoice createInvoice(Order createdOrder) {
