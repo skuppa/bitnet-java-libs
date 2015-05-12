@@ -188,9 +188,9 @@ Start by building a PayerUpdate object.
 /* Build a PayerUpdate object.
  * All payer information, apart from the Payer Id, can be updated.
  * @param YOUR_PAYER You should use a Payer you obtained from the Bitnet API
- * create or get methods to ensure it is populated with all existing payer data.
+ *        create or get methods to ensure it is populated with all existing payer data.
  * IMPORTANT: All previous payer information must be supplied, otherwise this
- * payer information will be overwritten.
+ *            payer information will be overwritten.
  */
 PayerUpdate payerToUpdate = new PayerUpdate(YOUR_PAYER)
                         .withEmail("updated@email.com");
@@ -563,9 +563,19 @@ public void handleBitnetException(RuntimeException exception) {
 }
 ```
 
+## Bitnet Notifications
+
+Bitnet informs merchants of significant events, such as a payment received or the state change of an Invoice, by invoking a webhook. The full guide to Bitnet Notifications and webhooks can be found in the [Bitnet Developer Guide](https://developer.bitnet.io/api_guide#webhooks).
+
+The SDK does not provide a mechanism for registered or receiving notifications, but it does give you some assistance in processing received notification.
+
+### Setting up the SDK for Notification Processing
+
+To be completed........
+
 ## Testing with a custom endpoint
 
-If you are testing with a custom Bitnet endpoint you can use the following
+If you are testing with a custom Bitnet endpoint you can get the Bitnet object as follows:
 
 ```java
 /*
