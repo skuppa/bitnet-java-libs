@@ -1,16 +1,15 @@
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.Uninterruptibles;
-import feign.Logger;
 import feign.codec.EncodeException;
 import io.bitnet.Bitnet;
-import io.bitnet.Blockchain;
 import io.bitnet.core.exceptions.*;
 import io.bitnet.core.notifications.BitnetNotificationHelper;
-import io.bitnet.feign.OkHttpClientProvider;
+import io.bitnet.model.payer.payer.Address;
 import io.bitnet.model.payer.payer.Payer;
 import io.bitnet.model.payer.payer.PayerCreate;
 import io.bitnet.model.payment.invoice.Invoice;
 import io.bitnet.model.payment.invoice.InvoiceCreate;
+import io.bitnet.model.payment.order.Item;
 import io.bitnet.model.payment.order.Order;
 import io.bitnet.model.payment.order.OrderCreate;
 import io.bitnet.model.refund.refund.Refund;
@@ -24,9 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import spark.Request;
 import spark.Response;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -37,7 +34,18 @@ import static spark.SparkBase.port;
 import static spark.SparkBase.stop;
 
 /**
- * Main class for demonstrating usage.
+ * Quick start example of using the Bitnet Java SDK.
+ * <p/>
+ * The Bitnet object wraps all the calls to the Bitnet API providing authentication management,
+ * error handling, parsing of responses, retries, PPI safe logging.
+ * <p/>
+ * The bitnet notification helper is used to verify that notifications are valid and verified to be generated using your subscriptions key id and secret.
+ * <p/>
+ * Sparkframework http://www.sparkjava.com is used to create a endpoint at http://127.0.0.1:8888/webhook for receiving notifications.
+ * N.B. If you are running this behind a firewall consider using http://ngrok.com to tunnel.
+ * The application will wait for 5  minutes before shutting down so that some notifications are relieved.
+ * <p/>
+ * After the example has setup the above it goes on to create a payer, order, invoice before finally attempting to create a refund.
  */
 public class Main {
     // Client id for your bitnet account in selected environment
@@ -69,16 +77,15 @@ public class Main {
         checkPreconditions();
 
         // To connect to production you would use:
-        bitnet = Bitnet.start(CLIENT_ID, SECRET);
+        //bitnet = Bitnet.start(CLIENT_ID, SECRET);
 
         // To connect to test you would use:
         // bitnet = Bitnet.startTest(CLIENT_ID, SECRET);
 
         // Advanced usage to connect to a specific environment use:
-        // bitnet = Bitnet.start(CLIENT_ID, SECRET, ENVIRONMENT, Blockchain.TESTNET, Logger.Level.FULL, OkHttpClientProvider.unsafeOkHttpClient());
+        bitnet = Bitnet.start(CLIENT_ID, SECRET, ENVIRONMENT, io.bitnet.Blockchain.TESTNET, feign.Logger.Level.FULL, io.bitnet.feign.OkHttpClientProvider.unsafeOkHttpClient());
 
-        // Create notification helper configured with all your subscription key ids.
-        // If you are running this behind a firewall consider using an http://ngrok.com tunnel as the notification in your subscriptions.
+        // Create notification helper configured with all your subscription key ids and secrets.
         notificationHelper = Bitnet.notificationHelper(
                 orderSubscriptionCredentials(ORDER_NOTIFICATION_SUBSCRIPTION_KEY_ID, ORDER_NOTIFICATION_SUBSCRIPTION_SECRET),
                 invoiceSubscriptionCredentials(INVOICE_NOTIFICATION_SUBSCRIPTION_KEY_ID, INVOICE_NOTIFICATION_SUBSCRIPTION_SECRET),
@@ -90,8 +97,15 @@ public class Main {
         // Registered to receive webhooks on 127.0.0.1:8888/webhook
         startNotificationsWebhook();
 
-        // Create a payer, order, invoice and refund against the bitnet api
-        callBitnetAPI(bitnet);
+        Payer payer = createPayer();
+        System.out.println("Created Payer " + payer);
+        Order order = createOrder(payer);
+        System.out.println("Created Order " + order);
+        Invoice invoice = createInvoice(order);
+        System.out.println("Created Invoice " + invoice);
+        Refund refund = createRefund(invoice);
+        System.out.println("Created refund " + refund);
+
 
         // Wait for 5 minutes so all notification are received before ending program.
         System.out.println("Waiting for notification events for 5 minutes");
@@ -99,55 +113,107 @@ public class Main {
         closeNotificationsWebhook();
     }
 
+    private static Payer createPayer() {
+       /*
+        * Build a payer address
+        */
+        Address payerAddress = new Address()
+                .withAddressLine1("9 test street")
+                .withAddressLine2("test avenue")
+                .withCity("testville")
+                .withRegion("Illinois")
+                .withPostalCode("60606")
+                .withCountry(Address.Country.US);
 
-    private static void callBitnetAPI(Bitnet bitnet) {
-        Payer createdPayer = call(() -> bitnet.payerService().createPayer(
-                new PayerCreate()
-                        .withAccountId(ACCOUNT_ID)
-                        .withEmail("payer.1@bitnet.io")
-                        .withReference(UUID.randomUUID().toString()))).orElse(null);
+        /*
+         * Build a payer with an address, reference and refund payment address.
+         * @param YOUR_UNIQUE_REFERENCE This is an unique identifier of your choosing.
+         *        If you submit two new payers with the same reference you will get a BitnetConflictException.
+         * @param REFUND_PAYMENT_ADDRESS This can be populated at time of creation, or
+         *        updated at a later date. A refund payment address must be set in order to initiate a refund for a Payer.
+         */
+        PayerCreate newPayer = new PayerCreate()
+                .withAccountId(ACCOUNT_ID)
+                .withEmail("thePayersEmailAddress@email.com")
+                .withReference(UUID.randomUUID().toString()) // A random reference Id
+                        //.withRefundPaymentAddress(REFUND_PAYMENT_ADDRESS)
+                .withAddress(payerAddress);
 
+        /*
+         * Call the BITNET service to create the prayer.
+         */
+        return call(() -> bitnet.payerService().createPayer(newPayer)).orElse(null);
+    }
+
+    private static Order createOrder(Payer createdPayer) {
         if (createdPayer == null) {
-            System.out.println("Unable to create payer");
-            return;
+            System.out.println("Unable to create order for null payer.");
+            return null;
         }
 
+        /*
+         * Build a list of items.
+         */
+        List<Item> items = new ArrayList<>();
+        items.add(new Item()
+                .withDesc("item 1")
+                .withName("item 1 name")
+                .withPrice("2.99")
+                .withQuantity(1)
+                .withSku("sku 1"));
 
-        Order createdOrder = call(() -> bitnet.orderService().createOrder(
-                new OrderCreate()
-                        .withAccountId(ACCOUNT_ID)
-                        .withPayerId(createdPayer.getId())
-                        .withCurrency(Order.Currency.BBD)
-                        .withTotalAmount("55.12"))).orElse(null);
+        /*
+         * Build an order object with some items and a description
+         */
+        OrderCreate newOrder = new OrderCreate()
+                .withAccountId(ACCOUNT_ID)
+                .withPayerId(createdPayer.getId())
+                .withCurrency(Order.Currency.USD)
+                .withTotalAmount("10.00")
+                .withDesc("A test order")
+                .withItems(items);
 
+        /*
+         * Call the BITNET service to create the order.
+         */
+        return call(() -> bitnet.orderService().createOrder(newOrder)).orElse(null);
+    }
+
+    private static Invoice createInvoice(Order createdOrder) {
         if (createdOrder == null) {
-            System.out.println("Unable to create order");
-            return;
+            System.out.println("Unable to create invoice for null order.");
+            return null;
         }
 
-        Invoice createdInvoice = call(() -> bitnet.invoiceService().createInvoice(
-                new InvoiceCreate()
-                        .withAccountId(ACCOUNT_ID)
-                        .withOrderId(createdOrder.getId()))).orElse(null);
+        /*
+         * Build an InvoiceCreate object.
+         * @EXISTING_ORDER_ID The id of an existing and open ORDER.
+         * Note: An order can only be linked to one invoice.
+         */
+        InvoiceCreate newInvoice = new InvoiceCreate()
+                .withAccountId(ACCOUNT_ID)
+                .withOrderId(createdOrder.getId());
 
+
+        /*
+         * Call the BITNET service to create the invoice.
+         */
+        return call(() -> bitnet.invoiceService().createInvoice(newInvoice)).orElse(null);
+    }
+
+    private static Refund createRefund(Invoice createdInvoice) {
         if (createdInvoice == null) {
-            System.out.println("Unable to create invoice");
-            return;
+            System.out.println("Unable to create refund for null invoice.");
+            return null;
         }
 
-        // The next call will fail as the invoice will still be open
-        // User of the SDK need to catch and handle exceptions, see below.
-
-        Optional<Refund> refund = call(() -> bitnet.refundService().createRefund(new RefundCreate()
+        return call(() -> bitnet.refundService().createRefund(new RefundCreate()
                 .withAccountId(ACCOUNT_ID)
                 .withAmount("10.00")
                 .withCurrency(Requested.Currency.BBD)
                 .withInstruction(Refund.Instruction.PARTIAL)
-                .withInvoiceId(createdInvoice.getId())));
-
-        System.out.println(refund);
+                .withInvoiceId(createdInvoice.getId()))).orElse(null);
     }
-
 
     /**
      * Handles bitnet exceptions logging out any exceptions which have occurred.
@@ -204,6 +270,7 @@ public class Main {
             handleBitnetException(e);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         return Optional.ofNullable(null);
