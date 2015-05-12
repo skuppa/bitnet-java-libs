@@ -570,12 +570,15 @@ If you are testing with a custom Bitnet endpoint you can use the following
 ```java
 /*
  * Get the bitnet object for a specified endpoint.
- * @param YOUR_BITNET_CLIENT_ID The Bitnet Client ID provided to you for the specified environment.
- * @param YOUR_BITNET_SECRET The Bitnet Secret provided to you for the specified environment.
+ * @param YOUR_BITNET_CLIENT_ID The Bitnet Client ID provided to you for the
+ *        specified environment.
+ * @param YOUR_BITNET_SECRET The Bitnet Secret provided to you for the
+ *        specified environment.
  * @param ENVIRONMENT The custom endpoint.
  * @param BLOCKCHAIN The block chain used by the endpoint; most likely TESTNET.
- * @param LOGGING_LEVEL The desire logging level.
- * @param unsafeOkHttpClient This allows you to ignore unsafe SSL connections; useful in test.
+ * @param LOGGING_LEVEL The desired logging level.
+ * @param unsafeOkHttpClient This allows you to ignore unsafe SSL connections;
+ *        useful in test.
  */
 Bitnet bitnet = Bitnet.start(YOUR_BITNET_CLIENT_ID,
                              YOUR_BITNET_SECRET,
@@ -647,7 +650,7 @@ gradlew.bat build -x integrationTest
 
 ```
 
-If you have a client account then update either sdk/integrationTest.properties or ~/.bitnet-java-libs/integrationTest.properties with your clientId, secret, environment, accountId, internalClientId and internalSecret
+If you have a client account then update either sdk/integrationTest.properties or ~/.bitnet-java-libs/integrationTest.properties with your clientId, secret, environment, accountId, internalClientId and internalSecret and run the full build:
 
 ```java
 # On OSX or Linux.
