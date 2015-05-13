@@ -75,6 +75,8 @@ task updateSDKVersions() {
     doLast {
         file('quickstart-java7/build.gradle').text = file('quickstart-java7/build.gradle').text.replaceAll(/io.bitnet:bitnet-java-sdk:.*/, "io.bitnet:bitnet-java-sdk:${project.version}'")
         file('quickstart-java7/pom.xml').text = file('quickstart-java7/pom.xml').text.replaceAll(/bitnet-java-sdk.*\n.*/, "bitnet-java-sdk</artifactId>\n            <version>${project.version}</version>")
+        file('README.md').text = file('README.md').text.replaceAll(/io.bitnet:bitnet-java-sdk:.*/, "io.bitnet:bitnet-java-sdk:${project.version}'")
+        file('README.md').text = file('README.md').text.replaceAll(/bitnet-java-sdk<\/artifactId>.*\n.*/, "bitnet-java-sdk</artifactId>\n        <version>${project.version}</version>")
     }
 }
 
