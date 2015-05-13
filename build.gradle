@@ -71,9 +71,14 @@ subprojects {
     }
 }
 
+task updateSDKVersions() {
+    doLast {
+        file('quickstart-java7/build.gradle').text = file('quickstart-java7/build.gradle').text.replaceAll(/io.bitnet:bitnet-java-sdk:.*/, "io.bitnet:bitnet-java-sdk:${project.version}'")
+        file('quickstart-java7/pom.xml').text = file('quickstart-java7/pom.xml').text.replaceAll(/bitnet-java-sdk.*\n.*/, "bitnet-java-sdk</artifactId>\n            <version>${project.version}</version>")
+    }
+}
+
 updateVersion.dependsOn ':client:bintrayUpload'
 updateVersion.dependsOn ':sdk:bintrayUpload'
 checkCommitNeeded.dependsOn 'checkRAMLBuild'
-
-
-
+updateVersion.dependsOn updateSDKVersions
