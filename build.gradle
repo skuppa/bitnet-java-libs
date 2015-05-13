@@ -52,11 +52,22 @@ subprojects {
         baseName "bitnet-java-${project.name}"
     }
 
+
+
     jar {
+        from("$rootDir") {
+            include "LICENSE"
+        }
         manifest {
             attributes("Implementation-Title": "bitnet-java-${project.name}",
-                       "Implementation-Version": version)
+                    "Implementation-Version": version,
+                    "Implementation-Vendor-Id": "io.bitnet",
+                    'Built-By': System.getProperty('user.name'),
+                    'Built-JDK': System.getProperty('java.version'),
+                    'Build-Time': new Date().format("yyyy-MM-dd HH:mm"))
         }
+
+
     }
 }
 
