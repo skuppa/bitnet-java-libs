@@ -1,12 +1,12 @@
 import java.security.MessageDigest
 
+Integer.metaClass.getSeconds = { ->
+    delegate * 1000
+}
+
+project.ext.url = 'https://developer.bitnet.io/assets/raml/bitnet-payment-api.raml'.toURL()
+
 private String latestDevRAML() {
-    Integer.metaClass.getSeconds = { ->
-        delegate * 1000
-    }
-
-    def url = 'https://developer.bitnet.io/assets/raml/bitnet-payment-api.raml'.toURL()
-
     MessageDigest digest = MessageDigest.getInstance("MD5")
     InputStream is = url.newInputStream(connectTimeout: 10.seconds, readTimeout: 10.seconds,
             useCaches: true, allowUserInteraction: false,
@@ -54,8 +54,18 @@ task checkRAMLBuild() {
 
 task updateRAMLBuild() {
     doLast {
+        def builtAgainst = builtAgainstRAML()
         def latest = latestDevRAML()
-        updateBuildAgainstRAML(latest)
+
+        if (builtAgainst != latest) {
+            InputStream is = url.newInputStream(connectTimeout: 10.seconds, readTimeout: 10.seconds,
+                    useCaches: true, allowUserInteraction: false,
+                    requestProperties: ['User-Agent': 'Groovy'])
+            new FileOutputStream("config/raml/bitnet-payment-api-${new Date().format("yyyy-MM-dd-HHmmss")}-${latest}.raml") << is
+            updateBuildAgainstRAML(latest)
+        }
+    }
+}
     }
 }
 
