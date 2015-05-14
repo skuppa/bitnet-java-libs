@@ -569,11 +569,28 @@ Bitnet informs merchants of significant events, such as a payment received or th
 
 The SDK does not provide a mechanism for registered or receiving notifications, but it does give you some assistance in processing received notification.
 
-### Setting up the SDK for Notification Processing
+### Prerequistes
 
-#### Bitnet Notification Helper object
+There are three types of notification:
+1. Orders
+2. Invoices
+3. Refunds
 
-The Bitnet object can provide a helper for working with notifications. You can obtain an instance of the object as follows:
+For each type of notification you will need a subscription key and secret. You should have received these as part of the Bitnet registration process.
+
+### Getting Setup to receive notifications
+
+#### Step 1 - Standup endpoint
+
+This step is outside of the scope of the SDK. You should create your own endpoint which you can register with Bitnet to receive notifications. There is an example endpoint in the [Quick Start](https://developer.bitnet.io/api_guide#webhooks) sample project. The processing of the received messages is discussed in Step 3.
+
+#### Step 2 - Register webhook with Bitnet
+
+You will need to ensure your endpoint is registered with Bitnet. Read more about Webhooks and Bitnet [here](https://developer.bitnet.io/api_guide#webhooks).
+
+#### Step 3 - Processing Bitnet Notifications
+
+To use the SDK to process notifications you will first need to create a notification helper object with your client credentials:
 
 ```java
 /*
@@ -594,9 +611,7 @@ BitnetNotificationHelper notificationHelper = Bitnet.notificationHelper(
                 refundSubscriptionCredentials(REFUND_NOTIFICATION_SUBSCRIPTION_KEY_ID, REFUND_NOTIFICATION_SUBSCRIPTION_SECRET));
 ```
 
-### Verifying notifications
-
-The Bitnet Notification Helper verifies that a notification request has a valid payload and signature using the provided subscription credentials.
+Now use the Bitnet Notification Helper to verify that a notification request has a valid payload and signature:
 
 ```java
 public Response handle(Request request, Response response) {
@@ -606,47 +621,50 @@ public Response handle(Request request, Response response) {
                 .put("Date", request.headers("Date"))
                 .put("Authorization", request.headers("Authorization"))
                 .build();
-                
-        // Check that notification is verified to have a valid payload and signature.                
+
+        // Check that notification is verified to have a valid payload and signature.
+        // This uses the credentials provided when you fetched the notification helper.
         if (notificationHelper.isVerifiedNotification(headers, request.body())) {
             ... do something with verified request.
         }
 }
 ```
 
-To find out more details on why a notification request is unverifiable.
+If the notification is valid you are ready to parse it. Start by determining the notification's event type.
+
 ```java
-// Returns string explaining why notification could not be verified 
-notificationHelper.rejectNotificationReason(headers, request.body());
+/*
+ * Get the notification event type
+ * NOTE: Currently the SDK support INVOICE_EXPIRED, INVOICE_PAYMENT_RECEIVED, INVOICE_STATE_CHANGED,
+ *       ORDER_STATE_CHANGED, REFUND_STATE_CHANGED notification events.
+ */
+Notification.EventType eventType = notificationHelper.getNotificationEventType(request.body())
 ```
 
-### Parsing notifications
-
-To determine how to parse a notification, you must first determine the notification's event type. 
-Currently the SDK support INVOICE_EXPIRED, INVOICE_PAYMENT_RECEIVED, INVOICE_STATE_CHANGED, ORDER_STATE_CHANGED, REFUND_STATE_CHANGED notification events.
+Now parse the different notifications:
 
 ```java
-Notfication.EventType eventType = notificationHelper.getNotificationEventType(request.body())
-```
-
-The start of the event type indicates what type of notification has been received.
-
-```java
-// Parsing a invoice notification
+/*
+ * Parsing a invoice notification.
+ */
 if (eventType == INVOICE_EXPIRED) {
     Notification<InvoiceNotification> notification = notificationHelper.getInvoiceNotification(request.body());
     Invoice invoice = notification.getNotification().getInvoice();
     handleInvoiceExpired(invoice);
 }
 
-// Parsing an order notification
+/*
+ * Parsing an order notification.
+ */
 if (eventType == ORDER_STATE_CHANGED) {
     Notification<OrderNotification> notification = notificationHelper.getOrderNotification(request.body());
     Order order = notification.getNotification().getOrder();
     handleOrderStateChange(order);
 }
 
-// Parsing a refund notification
+/*
+ * Parsing a refund notification.
+ */
 if (eventType == REFUND_STATE_CHANGED) {
     Notification<RefundNotification> notification = notificationHelper.getRefundNotification(request.body());
     Refund refund = notification.getNotification().getRefund();
@@ -654,7 +672,14 @@ if (eventType == REFUND_STATE_CHANGED) {
 }
 ```
 
+If your notification is found to be invalid you can find out why using the SDK:
 
+```java
+/*
+ * Returns string explaining why notification could not be verified.
+ */
+notificationHelper.rejectNotificationReason(headers, request.body());
+```
 
 ## Testing with a custom endpoint
 
