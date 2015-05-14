@@ -572,9 +572,9 @@ The SDK does not provide a mechanism for registered or receiving notifications, 
 ### Prerequistes
 
 There are three types of notification:
-1. Orders
-2. Invoices
-3. Refunds
+* Orders
+* Invoices
+* Refunds
 
 For each type of notification you will need a subscription key and secret. You should have received these as part of the Bitnet registration process.
 
@@ -582,11 +582,11 @@ For each type of notification you will need a subscription key and secret. You s
 
 #### Step 1 - Standup endpoint
 
-This step is outside of the scope of the SDK. You should create your own endpoint which you can register with Bitnet to receive notifications. There is an example endpoint in the [Quick Start](https://developer.bitnet.io/api_guide#webhooks) sample project. The processing of the received messages is discussed in Step 3.
+This step is outside of the scope of the SDK. You should create your own endpoint which you can register with Bitnet to receive notifications. There is an example endpoint in the [Quick Start](https://developer.bitnet.io/api_guide#webhooks) sample project. The processing of the received messages is discussed in [Step 3](#step-3---processing-bitnet-notifications).
 
-#### Step 2 - Register webhook with Bitnet
+#### Step 2 - Register Webhook with Bitnet
 
-You will need to ensure your endpoint is registered with Bitnet. Read more about Webhooks and Bitnet [here](https://developer.bitnet.io/api_guide#webhooks).
+You will need to ensure your endpoint is [registered](https://developer.bitnet.io/api_guide#webhooks) with Bitnet.
 
 #### Step 3 - Processing Bitnet Notifications
 
@@ -598,17 +598,29 @@ To use the SDK to process notifications you will first need to create a notifica
  *
  * The helper does not require credentials for subscriptions you are not interested in processing.
  *
- * @param ORDER_NOTIFICATION_SUBSCRIPTION_KEY_ID The subscription key id given to you for receiving order notifications.
- * @param ORDER_NOTIFICATION_SUBSCRIPTION_SECRET The subscription key id given to you for receiving order notifications.
- * @param INVOICE_NOTIFICATION_SUBSCRIPTION_KEY_ID The subscription key id given to you for receiving invoice notifications.
- * @param INVOICE_NOTIFICATION_SUBSCRIPTION_SECRET The subscription key id given to you for receiving invoice notifications.
- * @param REFUND_NOTIFICATION_SUBSCRIPTION_KEY_ID The subscription key id given to you for receiving refund notifications.
- * @param REFUND_NOTIFICATION_SUBSCRIPTION_SECRET The subscription key id given to you for receiving refund notifications.
+ * @param ORDER_NOTIFICATION_SUBSCRIPTION_KEY_ID The subscription key
+ *        id given to you for receiving order notifications.
+ * @param ORDER_NOTIFICATION_SUBSCRIPTION_SECRET The subscription key
+ *        id given to you for receiving order notifications.
+ * @param INVOICE_NOTIFICATION_SUBSCRIPTION_KEY_ID The subscription key
+ *        id given to you for receiving invoice notifications.
+ * @param INVOICE_NOTIFICATION_SUBSCRIPTION_SECRET The subscription key
+ *        id given to you for receiving invoice notifications.
+ * @param REFUND_NOTIFICATION_SUBSCRIPTION_KEY_ID The subscription key
+ *        id given to you for receiving refund notifications.
+ * @param REFUND_NOTIFICATION_SUBSCRIPTION_SECRET The subscription key
+ *        id given to you for receiving refund notifications.
  */
 BitnetNotificationHelper notificationHelper = Bitnet.notificationHelper(
-                orderSubscriptionCredentials(ORDER_NOTIFICATION_SUBSCRIPTION_KEY_ID, ORDER_NOTIFICATION_SUBSCRIPTION_SECRET),
-                invoiceSubscriptionCredentials(INVOICE_NOTIFICATION_SUBSCRIPTION_KEY_ID, INVOICE_NOTIFICATION_SUBSCRIPTION_SECRET),
-                refundSubscriptionCredentials(REFUND_NOTIFICATION_SUBSCRIPTION_KEY_ID, REFUND_NOTIFICATION_SUBSCRIPTION_SECRET));
+                orderSubscriptionCredentials(
+                    ORDER_NOTIFICATION_SUBSCRIPTION_KEY_ID,
+                    ORDER_NOTIFICATION_SUBSCRIPTION_SECRET),
+                invoiceSubscriptionCredentials(
+                    INVOICE_NOTIFICATION_SUBSCRIPTION_KEY_ID,
+                    INVOICE_NOTIFICATION_SUBSCRIPTION_SECRET),
+                refundSubscriptionCredentials(
+                    REFUND_NOTIFICATION_SUBSCRIPTION_KEY_ID,
+                    REFUND_NOTIFICATION_SUBSCRIPTION_SECRET));
 ```
 
 Now use the Bitnet Notification Helper to verify that a notification request has a valid payload and signature:
@@ -635,8 +647,9 @@ If the notification is valid you are ready to parse it. Start by determining the
 ```java
 /*
  * Get the notification event type
- * NOTE: Currently the SDK support INVOICE_EXPIRED, INVOICE_PAYMENT_RECEIVED, INVOICE_STATE_CHANGED,
- *       ORDER_STATE_CHANGED, REFUND_STATE_CHANGED notification events.
+ * NOTE: Currently the SDK support INVOICE_EXPIRED, INVOICE_PAYMENT_RECEIVED,
+ *       INVOICE_STATE_CHANGED, ORDER_STATE_CHANGED, REFUND_STATE_CHANGED notification
+ *       events.
  */
 Notification.EventType eventType = notificationHelper.getNotificationEventType(request.body())
 ```
