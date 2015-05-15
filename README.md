@@ -3,6 +3,8 @@
 
 [Bitnet](https://bitnet.io/) is an enterprise grade digital commerce platform delivering the security, reliability and scalability demanded by global businesses. There are a number of ways of integrating with the platform; The Java SDK is one of the integrations. You can find full details on the platform and all integrations in the [implementation guide](https://developer.bitnet.io/implementation_guide).
 
+The SDK is a convenient abstract layer over the Bitnet RESTful API and webhooks. It allows you to integrate with the Bitnet services quickly and easily when you do not need the finer grained control and flexibility offered by the RESTful API.
+
 The following document should provide all the information you need to get up and running with the SDK.
 
 ## Prerequisites
@@ -438,7 +440,7 @@ Refund refund = bitnet.refundService().createRefund(newRefund);
 
 ```java
 /*
- * Build a RefundCreate object for the partial correction refund.
+ * Build a RefundCreate object for the partial refund.
  * @param Instruction To initiate a partial refund you must set the Refund
  *        Instruction to PARTIAL.
  * @param REFUND_AMOUNT The refund amount also must be less than the pricing amount
@@ -466,7 +468,7 @@ Refund refund = bitnet.refundService().createRefund(newRefund);
 
 ### Mispayment Correction refund
 
-For OVERPAID invoices a mispayment correction can be initiated to return the overpaid amount.
+For UNDERPAID and OVERPAID invoices a mispayment correction can be initiated to return the appropriate amount.
 
 ```java
 /*
@@ -474,8 +476,8 @@ For OVERPAID invoices a mispayment correction can be initiated to return the ove
  * @param Instruction To initiate a mispayment correction refund you must set the
  *        Refund Instruction to MISPAYMENT_CORRECTION
  * @param INVOICE_ID The invoice which should be refunded against.
- * IMPORTANT: The invoice must be in a state of OVERPAID and the payer associated
- *            with the order must have a refund payment address
+ * IMPORTANT: The invoice must be in a state of UNDERPAID or OVERPAID and the payer
+ *            associated with the order must have a refund payment address
  *            present before a refund can be created.
  */
 RefundCreate newRefund = new RefundCreate()
