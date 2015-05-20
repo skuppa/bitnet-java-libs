@@ -50,11 +50,6 @@ subprojects {
 
     tasks.withType(Jar) {
         baseName "bitnet-java-${project.name}"
-    }
-
-
-
-    jar {
         from("$rootDir") {
             include "LICENSE"
         }
@@ -66,8 +61,6 @@ subprojects {
                     'Built-JDK': System.getProperty('java.version'),
                     'Build-Time': new Date().format("yyyy-MM-dd HH:mm"))
         }
-
-
     }
 }
 
