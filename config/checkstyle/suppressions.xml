@@ -10,4 +10,5 @@
     <suppress files="[\\/]io.bitnet.api[\\/]" checks="[a-zA-Z0-9]*"/>
     <suppress files="[\\/]notifications.model[\\/]" checks="[a-zA-Z0-9]*"/>
 
+    <suppress files="[\\/]bitnet.core.notifications.httpsig[\\/]" checks="[a-zA-Z0-9]*"/>
 </suppressions>

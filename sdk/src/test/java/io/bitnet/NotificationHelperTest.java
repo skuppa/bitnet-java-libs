@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 
 import static io.bitnet.core.notifications.NotificationSubscription.invoiceSubscriptionCredentials;
@@ -30,6 +31,7 @@ public class NotificationHelperTest {
 
     @Before
     public void setup() {
+        Locale.setDefault(Locale.JAPAN);
         notificationHelper = Bitnet.notificationHelper(
                 orderSubscriptionCredentials("dd8a326a-d28e-4e26-99cc-4758e858d647", "111111111122222222221111111111222222222211111111112222222222"),
                 invoiceSubscriptionCredentials("1d7fd0e9-4727-4b12-a2a3-c9d7360f0918", "111111111122222222221111111111222222222211111111112222222222"));
@@ -67,9 +69,7 @@ public class NotificationHelperTest {
                 .put("Authorization", "Signature keyId=\"1d7fd0e9-4727-4b12-a2a3-c9d7360f0918\",signature=\"IOgpR8eOm4twjDM3eDNjVaXJfZhsz0LQLOv4avXGDPQ=\",headers=\"date digest\"," +
                         "algorithm=\"hmac-sha256\"")
                 .build();
-
-        notificationHelper.isVerifiedNotification(headers, body);
-
+        
         assertThat(notificationHelper.isVerifiedNotification(headers, body), is(true));
     }
 

@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
+import io.bitnet.core.notifications.httpsig.BitnetRequestContent;
+import io.bitnet.core.notifications.httpsig.BitnetVerifier;
 import io.bitnet.notifications.model.InvoiceNotification;
 import io.bitnet.notifications.model.Notification;
 import io.bitnet.notifications.model.OrderNotification;
@@ -192,15 +194,15 @@ public class BitnetNotificationHelper {
         return headers;
     }
 
-    private RequestContent requestContent(Map<String, String> headers) {
-        RequestContent.Builder requestContentBuilder = new RequestContent.Builder();
+    private BitnetRequestContent requestContent(Map<String, String> headers) {
+        BitnetRequestContent.Builder requestContentBuilder = new BitnetRequestContent.Builder();
         requestContentBuilder.addHeader("date", headers.get("date"));
         requestContentBuilder.addHeader("digest", headers.get("digest"));
         return requestContentBuilder.build();
     }
 
-    private DefaultVerifier verifier() {
-        return new DefaultVerifier(
+    private BitnetVerifier verifier() {
+        return new BitnetVerifier(
                 new DefaultKeychain(keys), Constants.DEFAULT_KEY_IDENTIFIER, -1L);
     }
 

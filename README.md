@@ -795,3 +795,16 @@ If you have a client account then update either sdk/integrationTest.properties o
 gradlew.bat build
 
 ```
+
+## bitnet-codegen submodule
+Inside the project there is an empty folder bitnet-codegen, this is a git submodule.
+ 
+If you have access to the bitnet-codegen repository, please run the following:
+
+```
+cd bitnet-codegen
+git submodule init
+git 
+```
+
+If you do not have access to the bitnet-codegen, don't worry there are no dependencies on the submodule to build, test or run the SDK.
