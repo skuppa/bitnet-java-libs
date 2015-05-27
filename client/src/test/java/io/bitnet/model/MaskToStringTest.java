@@ -3,9 +3,9 @@
  */
 package io.bitnet.model;
 
-import io.bitnet.model.payer.payer.Address;
-import io.bitnet.model.payer.payer.ContactNumber;
-import io.bitnet.model.payer.payer.Payer;
+import io.bitnet.model.payer.Address;
+import io.bitnet.model.payer.ContactNumber;
+import io.bitnet.model.payer.Payer;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -48,7 +48,7 @@ public class MaskToStringTest {
         assertThat(payerToString, containsString("lastName=lastName"));
         assertAddressMasked(payerToString);
         assertThat(payerToString, containsString("email=email"));
-        assertThat(payerToString, containsString("contactNumbers=[io.bitnet.model.payer.payer.ContactNumber"));
+        assertThat(payerToString, containsString("contactNumbers=[io.bitnet.model.payer.ContactNumber"));
         assertThat(payerToString, containsString("[label=HOME,number=contactNumber]"));
         assertThat(payerToString, containsString("refundPaymentAddress=refundPaymentAddress"));
         assertThat(payerToString, containsString("createdAt=createdAt"));

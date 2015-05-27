@@ -24,7 +24,7 @@ public class DefaultCache {
      */
     public void storeAccessToken(Token accessToken) {
         accessTokenCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(accessToken.getExpires_in().longValue(), TimeUnit.SECONDS)
+                .expireAfterWrite(accessToken.getExpiresIn().longValue(), TimeUnit.SECONDS)
                 .build();
 
         accessTokenCache.put(ACCESS_TOKEN, accessToken);

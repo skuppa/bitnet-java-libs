@@ -8,9 +8,9 @@ import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 import io.bitnet.api.RefundService;
-import io.bitnet.model.refund.refund.Refund;
-import io.bitnet.model.refund.refund.RefundCreate;
-import io.bitnet.model.refund.refund.Refunds;
+import io.bitnet.model.refund.Refund;
+import io.bitnet.model.refund.RefundCreate;
+import io.bitnet.model.refund.Refunds;
 
 /**
  * Feign representation of RefundService.

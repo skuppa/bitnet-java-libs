@@ -7,7 +7,7 @@ package io.bitnet.feign;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
-import io.bitnet.model.payment.invoice.Invoice;
+import io.bitnet.model.payment.Invoice;
 
 /**
  * This differs to the Invoice Service offered to customers as it uses an invoice which does not rely on

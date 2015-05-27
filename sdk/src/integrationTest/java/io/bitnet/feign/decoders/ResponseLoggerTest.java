@@ -6,7 +6,7 @@ package io.bitnet.feign.decoders;
 import com.google.common.io.Files;
 import feign.Response;
 import feign.codec.Decoder;
-import io.bitnet.model.payer.payer.Payer;
+import io.bitnet.model.payer.Payer;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

@@ -4,8 +4,8 @@
 
 package io.bitnet;
 
-import io.bitnet.model.payer.payer.ContactNumber;
-import io.bitnet.model.payment.order.Item;
+import io.bitnet.model.payer.ContactNumber;
+import io.bitnet.model.payment.Item;
 
 import java.util.List;
 import java.util.Set;
@@ -38,13 +38,13 @@ public class AssertionHelper {
     }
 
     public static void assertThatShippingContactNumbersMatch(
-            Set<io.bitnet.model.payment.order.ContactNumber> expectedContactNumbers,
-            Set<io.bitnet.model.payment.order.ContactNumber> actualContactNumbers) {
+            Set<io.bitnet.model.payment.ContactNumber> expectedContactNumbers,
+            Set<io.bitnet.model.payment.ContactNumber> actualContactNumbers) {
         if (expectedContactNumbers.size() != actualContactNumbers.size()) {
             fail(String.format("The contact numbers expected %s do not match the actual contact numbers %s", expectedContactNumbers, actualContactNumbers));
         }
 
-        for (io.bitnet.model.payment.order.ContactNumber contactNumber : actualContactNumbers) {
+        for (io.bitnet.model.payment.ContactNumber contactNumber : actualContactNumbers) {
             if (!expectedContactNumbers.contains(contactNumber)) {
                 fail(String.format("The contact numbers expected %s do not match the actual contact numbers %s", expectedContactNumbers, actualContactNumbers));
             }

@@ -4,16 +4,15 @@ buildscript {
     }
 }
 
-
-apply from: '../config/gradle/pojo-generation.gradle'
-apply from: '../config/gradle/log-mask.gradle'
-apply from: '../config/gradle/custom-validation.gradle'
-apply from: '../config/gradle/custom-methods.gradle'
 apply from: '../config/gradle/bintray-publish.gradle'
 
 dependencies {
     compile 'org.bitcoinj:bitcoinj-core:0.12.3'
     compile 'org.modelmapper:modelmapper:0.7.4'
+    compile 'javax.validation:validation-api:1.1.0.CR2'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
+    compile 'org.apache.commons:commons-lang3:3.3.2'
+
     testCompile "junit:junit:4.11"
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
     testCompile 'org.mockito:mockito-core:2.0.5-beta'
@@ -24,9 +23,5 @@ pmdMain {
     exclude "**/io/bitnet/notifications/model/**"
 }
 
-task cleanModel() << {
-    delete 'src/main/java/io/bitnet/model'
-}
 
-clean.dependsOn cleanModel
 

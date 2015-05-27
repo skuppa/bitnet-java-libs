@@ -9,15 +9,15 @@ import io.bitnet.api.InvoiceService;
 import io.bitnet.core.exceptions.BitnetConflictException;
 import io.bitnet.core.exceptions.BitnetRequestCouldNotBeProcessedException;
 import io.bitnet.core.exceptions.BitnetResourceNotFoundException;
-import io.bitnet.model.payer.payer.Payer;
-import io.bitnet.model.payer.payer.PayerCreate;
-import io.bitnet.model.payment.invoice.Invoice;
-import io.bitnet.model.payment.invoice.InvoiceCreate;
-import io.bitnet.model.payment.invoice.InvoiceUpdate;
-import io.bitnet.model.payment.invoice.Invoices;
-import io.bitnet.model.payment.order.Order;
-import io.bitnet.model.payment.order.OrderCreate;
-import io.bitnet.model.payment.order.OrderUpdate;
+import io.bitnet.model.payer.Payer;
+import io.bitnet.model.payer.PayerCreate;
+import io.bitnet.model.payment.Invoice;
+import io.bitnet.model.payment.InvoiceCreate;
+import io.bitnet.model.payment.InvoiceUpdate;
+import io.bitnet.model.payment.Invoices;
+import io.bitnet.model.payment.Order;
+import io.bitnet.model.payment.OrderCreate;
+import io.bitnet.model.payment.OrderUpdate;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
@@ -136,7 +136,7 @@ public class InvoiceServiceTest {
         Invoice createdInvoice = createInvoiceForOpenOrder();
         InvoiceUpdate invoiceToUpdate = new InvoiceUpdate().withState(Invoice.State.CANCELED);
 
-        Invoice updatedInvoice = target.updateInvoice(createdInvoice.getId(), invoiceToUpdate);
+        Invoice updatedInvoice = target.updateInvoice(invoiceToUpdate, createdInvoice.getId());
 
         assertThat(updatedInvoice.getState(), is(equalTo(Invoice.State.CANCELED)));
     }
@@ -146,9 +146,9 @@ public class InvoiceServiceTest {
         Invoice createdInvoice = createInvoiceForOpenOrder();
         InvoiceUpdate invoiceToUpdate = new InvoiceUpdate().withState(Invoice.State.CANCELED);
 
-        target.updateInvoice(createdInvoice.getId(), invoiceToUpdate);
+        target.updateInvoice(invoiceToUpdate, createdInvoice.getId());
         try {
-            target.updateInvoice(createdInvoice.getId(), invoiceToUpdate);
+            target.updateInvoice(invoiceToUpdate, createdInvoice.getId());
         } catch (BitnetConflictException exception) {
             logger.info("Bitnet Conflict Exception: {}", exception);
             assertIsUUID(exception.getCorrelationId());
@@ -161,7 +161,7 @@ public class InvoiceServiceTest {
         InvoiceUpdate invoiceToUpdate = new InvoiceUpdate().withState(Invoice.State.CANCELED);
 
         try {
-            target.updateInvoice(getRandomId(), invoiceToUpdate);
+            target.updateInvoice(invoiceToUpdate, getRandomId());
         } catch (BitnetResourceNotFoundException exception) {
             logger.info("Bitnet Resource Not Found Exception: {}", exception);
             assertIsUUID(exception.getCorrelationId());
@@ -231,7 +231,7 @@ public class InvoiceServiceTest {
     @Test
     public void shouldGetInvoicesWhichHaveTransitionedToOpen() {
         createInvoiceForOpenOrder();
-        List<Invoice.State> transitionTo = getStates(Invoice.State.OPEN);
+        Invoice.State transitionTo = Invoice.State.OPEN;
         String transitionedDate = String.format("%s..%s", new DateTime(DateTimeZone.UTC).minusMinutes(10).toString(), new DateTime(DateTimeZone.UTC).toString());
 
         Invoices invoices = target.getInvoices(transitionTo, transitionedDate, testAccountId(), 0, 10);

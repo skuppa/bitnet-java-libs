@@ -53,7 +53,7 @@ public class FeignAuthenticationManagerUnitTest {
 
     @Test
     public void shouldGetTokenFromCacheWhenAvailable() {
-        when(accessToken.getAccess_token()).thenReturn("myBitnetToken");
+        when(accessToken.getAccessToken()).thenReturn("myBitnetToken");
         when(cache.getAccessToken()).thenReturn(accessToken);
 
         assertThat("myBitnetToken", is(equalTo(target.authenticate())));
@@ -68,6 +68,6 @@ public class FeignAuthenticationManagerUnitTest {
 
     private void setOAuthServiceToReturnAuthenticationToken() {
         when(oAuthService.authenticate("client_credentials")).thenReturn(accessToken);
-        when(accessToken.getAccess_token()).thenReturn("myBitnetToken");
+        when(accessToken.getAccessToken()).thenReturn("myBitnetToken");
     }
 }

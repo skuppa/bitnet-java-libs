@@ -7,9 +7,9 @@ import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 import io.bitnet.api.PayerService;
-import io.bitnet.model.payer.payer.Payer;
-import io.bitnet.model.payer.payer.PayerCreate;
-import io.bitnet.model.payer.payer.PayerUpdate;
+import io.bitnet.model.payer.Payer;
+import io.bitnet.model.payer.PayerCreate;
+import io.bitnet.model.payer.PayerUpdate;
 
 /**
  * Feign representation of PayerService.

@@ -1,5 +1,0 @@
-io.bitnet.model.payer.payer.PayerCreate:
-  - check:
-      class: io.bitnet.validation.CheckPaymentAddress
-      fields:
-      - refundPaymentAddress

@@ -8,10 +8,10 @@ import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 import io.bitnet.api.OrderService;
-import io.bitnet.model.payment.order.Order;
-import io.bitnet.model.payment.order.OrderCreate;
-import io.bitnet.model.payment.order.OrderUpdate;
-import io.bitnet.model.payment.order.Orders;
+import io.bitnet.model.payment.Order;
+import io.bitnet.model.payment.OrderCreate;
+import io.bitnet.model.payment.OrderUpdate;
+import io.bitnet.model.payment.Orders;
 
 import java.util.List;
 

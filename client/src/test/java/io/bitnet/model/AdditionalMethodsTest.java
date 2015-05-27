@@ -3,14 +3,14 @@
  */
 package io.bitnet.model;
 
-import io.bitnet.model.payer.payer.Payer;
-import io.bitnet.model.payer.payer.PayerUpdate;
-import io.bitnet.model.payment.invoice.Invoice;
-import io.bitnet.model.payment.invoice.Invoices;
-import io.bitnet.model.payment.order.Order;
-import io.bitnet.model.payment.order.Orders;
-import io.bitnet.model.refund.refund.Refund;
-import io.bitnet.model.refund.refund.Refunds;
+import io.bitnet.model.payer.Payer;
+import io.bitnet.model.payer.PayerUpdate;
+import io.bitnet.model.payment.Invoice;
+import io.bitnet.model.payment.Invoices;
+import io.bitnet.model.payment.Order;
+import io.bitnet.model.payment.Orders;
+import io.bitnet.model.refund.Refund;
+import io.bitnet.model.refund.Refunds;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
@@ -76,7 +76,7 @@ public class AdditionalMethodsTest {
     }
 
     private Orders requestOrdersWithSize(int size, Order... orders) {
-        return new Orders().with_embedded(new io.bitnet.model.payment.order._embedded().withOrders(asList(orders))).withSize(size);
+        return new Orders().withEmbedded(new io.bitnet.model.payment.Embedded().withOrders(asList(orders))).withSize(size);
     }
 
     private Invoices requestInvoices(Invoice... invoices) {
@@ -84,7 +84,7 @@ public class AdditionalMethodsTest {
     }
 
     private Invoices requestInvoicesWithSize(int size, Invoice... invoices) {
-        return new Invoices().with_embedded(new io.bitnet.model.payment.invoice._embedded().withInvoices(asList(invoices))).withSize(size);
+        return new Invoices().withEmbedded(new io.bitnet.model.payment.Embedded_().withInvoices(asList(invoices))).withSize(size);
     }
 
     private Refunds requestRefunds(Refund... refunds) {
@@ -92,6 +92,6 @@ public class AdditionalMethodsTest {
     }
 
     private Refunds requestRefundsWithSize(int size, Refund... refunds) {
-        return new Refunds().with_embedded(new io.bitnet.model.refund.refund._embedded().withRefunds(asList(refunds))).withSize(size);
+        return new Refunds().withEmbedded(new io.bitnet.model.refund.Embedded().withRefunds(asList(refunds))).withSize(size);
     }
 }

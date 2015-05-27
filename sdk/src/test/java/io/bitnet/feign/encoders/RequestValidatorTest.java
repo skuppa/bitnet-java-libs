@@ -4,7 +4,7 @@
 package io.bitnet.feign.encoders;
 
 import feign.codec.Encoder;
-import io.bitnet.model.payer.payer.PayerCreate;
+import io.bitnet.model.payer.PayerCreate;
 import org.junit.Test;
 
 import javax.validation.ValidationException;

@@ -8,7 +8,7 @@ import io.bitnet.Bitnet;
 import io.bitnet.Blockchain;
 import io.bitnet.TestUtilities;
 import io.bitnet.core.exceptions.BitnetRequestCouldNotBeProcessedException;
-import io.bitnet.model.payer.payer.PayerCreate;
+import io.bitnet.model.payer.PayerCreate;
 import org.junit.Test;
 
 import static io.bitnet.TestCredentials.testAccountId;

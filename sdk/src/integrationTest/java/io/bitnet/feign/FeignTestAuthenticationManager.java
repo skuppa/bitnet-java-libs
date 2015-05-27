@@ -31,9 +31,9 @@ public class FeignTestAuthenticationManager implements AuthenticationManager {
         if (accessToken == null) {
             Token newToken = bitnetServiceProvider.oAuthService().authenticate("client_credentials");
             cache.storeAccessToken(newToken);
-            return newToken.getAccess_token();
+            return newToken.getAccessToken();
         }
 
-        return accessToken.getAccess_token();
+        return accessToken.getAccessToken();
     }
 }

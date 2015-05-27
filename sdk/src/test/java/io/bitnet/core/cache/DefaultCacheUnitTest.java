@@ -30,7 +30,7 @@ public class DefaultCacheUnitTest {
 
     @Test
     public void shouldStoreAccessToken() {
-        when(accessToken.getExpires_in()).thenReturn(1000.0);
+        when(accessToken.getExpiresIn()).thenReturn(1000.0);
 
         target.storeAccessToken(accessToken);
 
@@ -39,7 +39,7 @@ public class DefaultCacheUnitTest {
 
     @Test
     public void shouldNotStoreAccessTokenAfterExpiryTime() {
-        when(accessToken.getExpires_in()).thenReturn(0.0);
+        when(accessToken.getExpiresIn()).thenReturn(0.0);
 
         target.storeAccessToken(accessToken);
 
@@ -48,7 +48,7 @@ public class DefaultCacheUnitTest {
 
     @Test
     public void shouldRemoveAccessToken() {
-        when(accessToken.getExpires_in()).thenReturn(10000.0);
+        when(accessToken.getExpiresIn()).thenReturn(10000.0);
 
         target.storeAccessToken(accessToken);
         target.removeAccessToken();

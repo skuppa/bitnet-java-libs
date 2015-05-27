@@ -6,7 +6,8 @@
 
 <suppressions>
 
-    <suppress files="[\\/]model[\\/]" checks="[a-zA-Z0-9]*"/>
+    <suppress files="[\\/]io.bitnet.model[\\/]" checks="[a-zA-Z0-9]*"/>
+    <suppress files="[\\/]io.bitnet.api[\\/]" checks="[a-zA-Z0-9]*"/>
     <suppress files="[\\/]notifications.model[\\/]" checks="[a-zA-Z0-9]*"/>
 
 </suppressions>

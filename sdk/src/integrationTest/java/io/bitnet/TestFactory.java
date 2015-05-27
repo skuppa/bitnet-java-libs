@@ -4,11 +4,11 @@
 
 package io.bitnet;
 
-import io.bitnet.model.payer.payer.Address;
-import io.bitnet.model.payer.payer.ContactNumber;
-import io.bitnet.model.payer.payer.PayerCreate;
-import io.bitnet.model.payment.order.Item;
-import io.bitnet.model.payment.order.Shipping;
+import io.bitnet.model.payer.Address;
+import io.bitnet.model.payer.ContactNumber;
+import io.bitnet.model.payer.PayerCreate;
+import io.bitnet.model.payment.Item;
+import io.bitnet.model.payment.Shipping;
 
 import java.util.*;
 
@@ -49,16 +49,16 @@ public class TestFactory {
         return new ContactNumber().withNumber(number).withLabel(label);
     }
 
-    public static Set<io.bitnet.model.payment.order.ContactNumber> getOrderContactNumbers(String homeNumber, String workNumber, String mobileNumber) {
-        HashSet<io.bitnet.model.payment.order.ContactNumber> contactNumbers = new HashSet<>();
-        contactNumbers.add(getContactNumber(homeNumber, io.bitnet.model.payment.order.ContactNumber.Label.HOME));
-        contactNumbers.add(getContactNumber(workNumber, io.bitnet.model.payment.order.ContactNumber.Label.WORK));
-        contactNumbers.add(getContactNumber(mobileNumber, io.bitnet.model.payment.order.ContactNumber.Label.MOBILE));
+    public static Set<io.bitnet.model.payment.ContactNumber> getOrderContactNumbers(String homeNumber, String workNumber, String mobileNumber) {
+        HashSet<io.bitnet.model.payment.ContactNumber> contactNumbers = new HashSet<>();
+        contactNumbers.add(getContactNumber(homeNumber, io.bitnet.model.payment.ContactNumber.Label.HOME));
+        contactNumbers.add(getContactNumber(workNumber, io.bitnet.model.payment.ContactNumber.Label.WORK));
+        contactNumbers.add(getContactNumber(mobileNumber, io.bitnet.model.payment.ContactNumber.Label.MOBILE));
         return contactNumbers;
     }
 
-    private static io.bitnet.model.payment.order.ContactNumber getContactNumber(String number, io.bitnet.model.payment.order.ContactNumber.Label label) {
-        return new io.bitnet.model.payment.order.ContactNumber().withNumber(number).withLabel(label);
+    private static io.bitnet.model.payment.ContactNumber getContactNumber(String number, io.bitnet.model.payment.ContactNumber.Label label) {
+        return new io.bitnet.model.payment.ContactNumber().withNumber(number).withLabel(label);
     }
 
 
@@ -83,14 +83,14 @@ public class TestFactory {
         return items;
     }
 
-    private static io.bitnet.model.payment.order.Address getShippingAddress() {
-        return new io.bitnet.model.payment.order.Address()
+    private static io.bitnet.model.payment.Address getShippingAddress() {
+        return new io.bitnet.model.payment.Address()
                 .withAddressLine1("9 test street")
                 .withAddressLine2("test avenue")
                 .withCity("testville")
                 .withRegion("somewhere")
                 .withPostalCode("testcode")
-                .withCountry(io.bitnet.model.payment.order.Address.Country.US);
+                .withCountry(io.bitnet.model.payment.Address.Country.US);
     }
 
     private static Address getAddress() {

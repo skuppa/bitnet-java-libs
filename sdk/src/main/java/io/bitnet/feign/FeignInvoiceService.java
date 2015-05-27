@@ -8,10 +8,10 @@ import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 import io.bitnet.api.InvoiceService;
-import io.bitnet.model.payment.invoice.Invoice;
-import io.bitnet.model.payment.invoice.InvoiceCreate;
-import io.bitnet.model.payment.invoice.InvoiceUpdate;
-import io.bitnet.model.payment.invoice.Invoices;
+import io.bitnet.model.payment.Invoice;
+import io.bitnet.model.payment.InvoiceCreate;
+import io.bitnet.model.payment.InvoiceUpdate;
+import io.bitnet.model.payment.Invoices;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ interface FeignInvoiceService extends InvoiceService {
 
     @Override
     @RequestLine("GET v1/invoices?accountId={accountId}&transitionedTo={transitionedTo}&transitionedOn={transitionedOn}&offset={offset}&limit={limit}")
-    Invoices getInvoices(@Param("transitionedTo") List<Invoice.State> transitionedTo,
+    Invoices getInvoices(@Param("transitionedTo") Invoice.State transitionedTo,
                          @Param("transitionedOn") String transitionedOn, @Param("accountId") String accountId, @Param("offset") int offset, @Param("limit") int limit);
 
     @Override
@@ -54,5 +54,5 @@ interface FeignInvoiceService extends InvoiceService {
 
     @Override
     @RequestLine("PUT v1/invoices/{invoiceId}")
-    Invoice updateInvoice(@Param("invoiceId") String invoiceId, InvoiceUpdate entity);
+    Invoice updateInvoice(InvoiceUpdate entity, @Param("invoiceId") String invoiceId);
 }

@@ -10,7 +10,6 @@ buildscript {
 }
 
 apply plugin: 'net.researchgate.release'
-apply from: 'config/gradle/raml-check.gradle'
 
 subprojects {
     buildscript {
@@ -75,5 +74,4 @@ task updateSDKVersions() {
 
 updateVersion.dependsOn ':client:bintrayUpload'
 updateVersion.dependsOn ':sdk:bintrayUpload'
-checkCommitNeeded.dependsOn 'checkRAMLBuild'
 updateVersion.dependsOn updateSDKVersions
