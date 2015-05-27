@@ -53,7 +53,7 @@ And add the bitnet-java-sdk with the latest version as follows.
 
 ```javascript
 dependencies {
-    compile 'io.bitnet:bitnet-java-sdk:<!--current-version-->'
+    compile 'io.bitnet:bitnet-java-sdk:0.1.28-alpha'
 }
 ```
 
@@ -78,7 +78,7 @@ And add the bitnet-java-sdk with the latest version as follows.
     <dependency>
         <groupId>io.bitnet</groupId>
         <artifactId>bitnet-java-sdk</artifactId>
-        <version><!--current-version--></version>
+        <version>0.1.28-alpha</version>
     </dependency>
 </dependencies>
 ```
