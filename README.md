@@ -807,4 +807,10 @@ git submodule init
 git submodule update
 ```
 
+To update to the lastest version of bitnet-codegen run the following and commit the updated reference:
+
+```
+git submodule foreach git pull origin master
+```
+
 If you do not have access to the bitnet-codegen, don't worry there are no dependencies on the submodule to build, test or run the SDK.
