@@ -69,7 +69,7 @@ public class NotificationHelperTest {
                 .put("Authorization", "Signature keyId=\"1d7fd0e9-4727-4b12-a2a3-c9d7360f0918\",signature=\"IOgpR8eOm4twjDM3eDNjVaXJfZhsz0LQLOv4avXGDPQ=\",headers=\"date digest\"," +
                         "algorithm=\"hmac-sha256\"")
                 .build();
-        
+
         assertThat(notificationHelper.isVerifiedNotification(headers, body), is(true));
     }
 

@@ -45,6 +45,15 @@ public interface OrderService {
         Orders getOrders(String accountId, List<Order.State> state, int offset, int limit);
 
         /**
+        * Get the list of orders that belong to an particular account.
+        *
+        * @param reference Reference for a specific order eg. Customer-Order-0000-1234-5678
+        *
+        * @return The Orders
+        */
+        Orders getOrders(String reference);
+
+        /**
         * Create a new Order.
         * <p>.
         * An order can only be linked to one invoice.  .

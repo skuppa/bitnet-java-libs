@@ -84,6 +84,15 @@ public interface InvoiceService {
         Invoices getInvoices(Invoice.State transitionedTo, String transitionedOn, String accountId, int offset, int limit);
 
         /**
+        * Get all invoices, optionally filtered.
+        *
+        * @param reference Reference for a specific invoice eg. Customer-Order-0000-1234-5678
+        *
+        * @return The Invoices
+        */
+        Invoices getInvoices(String reference);
+
+        /**
         * Create a new Invoice.
         * <p>.
         * The *orderId* of a previously created order must be supplied when creating an invoice, along with your Bitnet *accountId*.  .

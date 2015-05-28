@@ -22,6 +22,10 @@ import java.util.List;
 interface FeignOrderService extends OrderService {
 
     @Override
+    @RequestLine("GET v1/orders?accountId={accountId}&reference={reference}&state={state}&offset={offset}&limit={limit}")
+    Orders getOrders(@Param("accountId") String accountId, @Param("reference") String reference, @Param("state") List<Order.State> state, @Param("offset") int offset, @Param("limit") int limit);
+
+    @Override
     @RequestLine("GET v1/orders?accountId={accountId}&state={state}&offset={offset}&limit={limit}")
     Orders getOrders(@Param("accountId") String accountId, @Param("state") List<Order.State> state, @Param("offset") int offset, @Param("limit") int limit);
 

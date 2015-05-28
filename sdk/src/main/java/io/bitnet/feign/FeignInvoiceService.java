@@ -21,6 +21,10 @@ import java.util.List;
 @Headers({"Content-Type: application/json"})
 interface FeignInvoiceService extends InvoiceService {
 
+    @Override
+    @RequestLine("GET v1/invoices?accountId={accountId}&orderId={orderId}&paymentAddress={paymentAddress}&reference={reference}&state={state}&transitionedTo={transitionedTo}&transitionedOn={transitionedOn}&offset={offset}&limit={limit}")
+    Invoices getInvoices(@Param("accountId") String accountId, @Param("orderId") String orderId, @Param("paymentAddress") String paymentAddress, @Param("reference") String reference, @Param("state") List<Invoice.State> state, @Param("transitionedTo") Invoice.State transitionedTo, @Param("transitionedOn") String transitionedOn, @Param("offset") int offset, @Param("limit") int limit);
+
 
     @Override
     @RequestLine("GET v1/invoices?accountId={accountId}&state={state}&orderId={orderId}&offset={offset}&limit={limit}")
