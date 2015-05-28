@@ -24,12 +24,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static io.bitnet.AssertionHelper.*;
 import static io.bitnet.TestCredentials.testAccountId;
 import static io.bitnet.TestFactory.*;
 import static io.bitnet.TestUtilities.newBitnetService;
 import static io.bitnet.TestUtilities.newBitnetServiceWithInvalidClientCredentials;
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.Is.is;
@@ -169,13 +171,21 @@ public class OrderServiceTest {
 
     @Test
     public void shouldBeAbleToGetOpenOrders() {
-        List<Order.State> openOrders = new ArrayList<Order.State>();
-        openOrders.add(Order.State.OPEN);
-
-        Orders orders = target.getOrders(testAccountId(), openOrders, 0, 10);
-
+        Orders orders = target.getOrders(testAccountId(), asList(Order.State.OPEN), 0, 10);
 
         assertThat(orders.getSize(), is(greaterThanOrEqualTo(10)));
+    }
+
+    @Test
+    public void shouldBeAbleToGetOrdersByReference() {
+        String reference = UUID.randomUUID().toString();
+        OrderCreate newOrder = getOrderToCreateWithOnlyRequiredInfo();
+        newOrder.setReference(reference);
+        target.createOrder(newOrder);
+
+        Orders orders = target.getOrders(testAccountId(), reference, 0, 10);
+
+        assertThat(orders.getSize(), is(greaterThanOrEqualTo(1)));
     }
 
     @Test

@@ -86,11 +86,14 @@ public interface InvoiceService {
         /**
         * Get all invoices, optionally filtered.
         *
+        * @param accountId Account that invoices belong to eg. 821baab2-90e1-a32d-2094-b31da1db6a42
         * @param reference Reference for a specific invoice eg. Customer-Order-0000-1234-5678
+        * @param offset Start index position for list of entities returned eg. 5
+        * @param limit Max number of profiles per page eg. 10
         *
         * @return The Invoices
         */
-        Invoices getInvoices(String reference);
+        Invoices getInvoices(String accountId, String reference, int offset, int limit);
 
         /**
         * Create a new Invoice.

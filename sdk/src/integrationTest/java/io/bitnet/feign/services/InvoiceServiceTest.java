@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static io.bitnet.AssertionHelper.assertIsUUID;
 import static io.bitnet.TestCredentials.testAccountId;
@@ -62,6 +63,25 @@ public class InvoiceServiceTest {
         InvoiceCreate newInvoice = getInvoiceForOpenOrder();
 
         Invoice createdInvoice = target.createInvoice(newInvoice);
+
+        assertIsUUID(createdInvoice.getQuote().getQuoteId());
+        assertThat(createdInvoice.getCreatedAt(), is(not(emptyOrNullString())));
+        assertThat(createdInvoice.getExpiresAt(), is(not(emptyOrNullString())));
+        assertThat(createdInvoice.getPaymentAddress(), is(not(emptyOrNullString())));
+        assertThat(createdInvoice.getPaymentUri(), is(not(emptyOrNullString())));
+        assertThat(createdInvoice.getState(), is(equalTo(Invoice.State.OPEN)));
+        assertThat(createdInvoice.getAmountReceived(), is(equalTo("0.00000000")));
+    }
+
+    @Test
+    public void shouldGetInvoiceByReference() {
+        String reference = UUID.randomUUID().toString();
+        InvoiceCreate newInvoice = getInvoiceForOpenOrder();
+        newInvoice.setReference(reference);
+
+        target.createInvoice(newInvoice);
+
+        Invoice createdInvoice = target.getInvoices(testAccountId(), reference, 0, 10).getInvoices().get(0);
 
         assertIsUUID(createdInvoice.getQuote().getQuoteId());
         assertThat(createdInvoice.getCreatedAt(), is(not(emptyOrNullString())));
