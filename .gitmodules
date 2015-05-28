@@ -1,3 +1,3 @@
 [submodule "bitnet-codegen"]
 	path = bitnet-codegen
-	url = https://github.com/bitnet/bitnet-codegen
+	url = git@github.com:bitnet/bitnet-codegen.git
