@@ -18,23 +18,11 @@ import java.util.List;
 * PARTIAL REFUND
 * <p>
 * MISPAYMENT CORRECTION
+* <p>
+* The Bitnet interface has a number of optional parameters for fetching Refunds. These are handled with overloaded methods.
+* The params are: accountId, invoiceId, state, transitionedTo, transitionedOn, offset, limit
 */
 public interface RefundService {
-
-        /**
-        * Retrieve a list of refunds with optional filters..
-        *
-        * @param accountId Search for refunds issued against a particular account. eg. c5582ab9-b4f4-421a-8dee-372687a14c26
-        * @param invoiceId Filter refunds on an account by invoice. eg. c474e3a1-3664-4c69-b2a4-ed6e9a537301
-        * @param state Filter refunds on an account/invoice by current state. eg. PAID
-        * @param transitionedTo Filter refunds that have transitioned to this state during the transitionedOn period eg. PAID
-        * @param transitionedOn Filter refunds that have transitioned during this period. startDate is inclusive, endDate is exclusive. eg. 2014-09-02T00:00:00.000Z..2014-09-03T00:00:00.000Z
-        * @param offset Start index position for list of entities returned eg. 5
-        * @param limit Max number of profiles per page eg. 10
-        *
-        * @return The Refunds
-        */
-        Refunds getRefunds(String accountId, String invoiceId, Refund.State state, Refund.State transitionedTo, String transitionedOn, int offset, int limit);
 
         /**
         * Retrieve a list of refunds with optional filters..
