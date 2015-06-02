@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Enum representing notification event types.
  */
-public enum NotificationEventType {
+public enum NotificationEventTypes {
     INVOICE_STATE_CHANGED("invoice.stateChanged"),
     INVOICE_PAYMENT_RECEIVED("invoice.paymentReceived"),
     INVOICE_EXPIRED("invoice.expired"),
@@ -17,15 +17,15 @@ public enum NotificationEventType {
     REFUND_STATE_CHANGED("refund.stateChanged");
 
     private final String value;
-    private static Map<String, NotificationEventType> constants = new HashMap<String, NotificationEventType>();
+    private static Map<String, NotificationEventTypes> constants = new HashMap<String, NotificationEventTypes>();
 
     static {
-        for (NotificationEventType c : values()) {
+        for (NotificationEventTypes c : values()) {
             constants.put(c.value, c);
         }
     }
 
-    private NotificationEventType(String value) {
+    private NotificationEventTypes(String value) {
         this.value = value;
     }
 
@@ -36,8 +36,8 @@ public enum NotificationEventType {
     }
 
     @JsonCreator
-    public static NotificationEventType fromValue(String value) {
-        NotificationEventType constant = constants.get(value);
+    public static NotificationEventTypes fromValue(String value) {
+        NotificationEventTypes constant = constants.get(value);
         if (constant == null) {
             throw new IllegalArgumentException(value);
         } else {
