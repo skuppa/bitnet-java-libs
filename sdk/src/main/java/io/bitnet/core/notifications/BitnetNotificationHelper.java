@@ -179,10 +179,10 @@ public class BitnetNotificationHelper {
      * @param body request body
      * @return notification event type
      */
-    public NotificationEventTypes getNotificationEventType(String body) {
+    public NotificationEventType getNotificationEventType(String body) {
         try {
             final JsonNode jsonNode = mapper.readTree(body);
-            return NotificationEventTypes.fromValue(jsonNode.get("event").asText());
+            return NotificationEventType.fromValue(jsonNode.get("event").asText());
         } catch (IOException e) {
             return null;
         } catch (Exception e) {
