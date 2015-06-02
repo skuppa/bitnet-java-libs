@@ -15,6 +15,8 @@ import io.bitnet.notifications.model.OrderNotification;
 import io.bitnet.notifications.model.RefundNotification;
 import net.adamcin.httpsig.api.*;
 import net.adamcin.httpsig.hmac.HmacKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
@@ -23,6 +25,7 @@ import java.util.*;
  * Provides assistance for verifying and parsing bitnet notifications.
  */
 public class BitnetNotificationHelper {
+    private static final Logger LOG = LoggerFactory.getLogger(BitnetNotificationHelper.class);
     public static final String ALGORITHM = "SHA-256";
     private final Challenge challenge = new Challenge("", Arrays.asList("date", "digest"), Arrays.asList(Algorithm.HMAC_SHA256));
     private final List<HmacKey> keys = new ArrayList<>();
@@ -146,8 +149,10 @@ public class BitnetNotificationHelper {
         try {
             return mapper.readValue(body, mapper.getTypeFactory().constructParametrizedType(Notification.class, Notification.class, type));
         } catch (IOException e) {
+            LOG.warn("Issue parsing notification event {} - {}", body, e.getMessage());
             return null;
         } catch (Exception e) {
+            LOG.warn("Issue parsing notification event {} - {}", body, e.getMessage());
             return null;
         }
     }
