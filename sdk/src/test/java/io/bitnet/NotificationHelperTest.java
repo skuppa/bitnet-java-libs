@@ -8,6 +8,7 @@ import io.bitnet.core.notifications.BitnetNotificationHelper;
 import io.bitnet.notifications.model.InvoiceNotification;
 import io.bitnet.notifications.model.Notification;
 
+import io.bitnet.notifications.model.NotificationEventType;
 import io.bitnet.notifications.model.OrderNotification;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,7 +81,7 @@ public class NotificationHelperTest {
                 "orderId\":\"3917d2f4-ae5f-4dd5-8e9c-b936f0b94eee\",\"reference\":null,\"state\":\"OPEN\",\"amount\":\"0.12137101\",\"amountReceived\":\"0.00000000\",\"currency\":\"BTC\"," +
                 "\"expired\":true}}}";
 
-        assertThat(notificationHelper.getNotificationEventType(body), is(Notification.EventType.INVOICE_EXPIRED));
+        assertThat(notificationHelper.getNotificationEventType(body), is(NotificationEventType.INVOICE_EXPIRED));
 
         Notification<InvoiceNotification> notification = notificationHelper.getInvoiceNotification(body);
         assertThat(notification.getNotification().getInvoice().getId(), is(equalTo("fa31c897-e66c-431e-a465-03daea7fab58")));
@@ -92,7 +93,7 @@ public class NotificationHelperTest {
                 "\"subscriptionId\":\"5a27a84d-ce78-45e4-be31-24c24b8f6205\",\"order\":{\"id\":\"fe96e4bf-9d6e-4cc6-9039-c708f1722391\",\"accountId\":\"f436aa6e-5d2f-43d6-9a99-0029a66a02f8\"," +
                 "\"state\":\"PAID\",\"reference\":\"null\",\"totalAmount\":\"55.12\",\"currency\":\"BBD\"}}}";
 
-        assertThat(notificationHelper.getNotificationEventType(body), is(Notification.EventType.ORDER_STATE_CHANGED));
+        assertThat(notificationHelper.getNotificationEventType(body), is(NotificationEventType.ORDER_STATE_CHANGED));
 
         Notification<OrderNotification> notification = notificationHelper.getOrderNotification(body);
         assertThat(notification.getNotification().getOrder().getId(), is(equalTo("fe96e4bf-9d6e-4cc6-9039-c708f1722391")));

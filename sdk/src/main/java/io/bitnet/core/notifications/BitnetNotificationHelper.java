@@ -9,10 +9,7 @@ import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 import io.bitnet.core.notifications.httpsig.BitnetRequestContent;
 import io.bitnet.core.notifications.httpsig.BitnetVerifier;
-import io.bitnet.notifications.model.InvoiceNotification;
-import io.bitnet.notifications.model.Notification;
-import io.bitnet.notifications.model.OrderNotification;
-import io.bitnet.notifications.model.RefundNotification;
+import io.bitnet.notifications.model.*;
 import net.adamcin.httpsig.api.*;
 import net.adamcin.httpsig.hmac.HmacKey;
 import org.slf4j.Logger;
@@ -182,10 +179,10 @@ public class BitnetNotificationHelper {
      * @param body request body
      * @return notification event type
      */
-    public Notification.EventType getNotificationEventType(String body) {
+    public NotificationEventType getNotificationEventType(String body) {
         try {
             final JsonNode jsonNode = mapper.readTree(body);
-            return Notification.EventType.fromValue(jsonNode.get("event").asText());
+            return NotificationEventType.fromValue(jsonNode.get("event").asText());
         } catch (IOException e) {
             return null;
         } catch (Exception e) {

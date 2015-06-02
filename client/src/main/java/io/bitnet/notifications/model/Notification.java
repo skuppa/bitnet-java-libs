@@ -158,44 +158,6 @@ public class Notification<T> {
     }
 
 
-    @Generated("org.jsonschema2pojo")
-    public static enum EventType {
-        INVOICE_STATE_CHANGED("invoice.stateChanged"),
-        INVOICE_PAYMENT_RECEIVED("invoice.paymentReceived"),
-        INVOICE_EXPIRED("invoice.expired"),
-        ORDER_STATE_CHANGED("order.stateChanged"),
-        REFUND_STATE_CHANGED("refund.stateChanged");
-
-        private final String value;
-        private static Map<String, Notification.EventType> constants = new HashMap<String, Notification.EventType>();
-
-        static {
-            for (Notification.EventType c : values()) {
-                constants.put(c.value, c);
-            }
-        }
-
-        private EventType(String value) {
-            this.value = value;
-        }
-
-        @JsonValue
-        @Override
-        public String toString() {
-            return this.value;
-        }
-
-        @JsonCreator
-        public static Notification.EventType fromValue(String value) {
-            Notification.EventType constant = constants.get(value);
-            if (constant == null) {
-                throw new IllegalArgumentException(value);
-            } else {
-                return constant;
-            }
-        }
-
-    }
 
     @Override
     public int hashCode() {
