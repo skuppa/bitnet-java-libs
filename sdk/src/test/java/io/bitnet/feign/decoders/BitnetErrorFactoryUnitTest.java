@@ -100,7 +100,8 @@ public class BitnetErrorFactoryUnitTest {
 
         BitnetRequestForbiddenException exception = target.getBitnetRequestForbiddenException(errorResponse);
 
-        assertThatBaseErrorInfoIsContainedWithinException(exception);
+        assertThat("Access to Bitnet Service is forbidden. Check your credentials and permissions for the invoked service.", is(equalTo(exception.getMessage())));
+        assertThat("12345", is(equalTo(exception.getCorrelationId())));
     }
 
     private Date currentDateTime() {

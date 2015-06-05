@@ -7,7 +7,9 @@ package io.bitnet.feign.decoders;
 import feign.Response;
 import io.bitnet.core.exceptions.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This provides factory methods for Bitnet Errors.
@@ -70,8 +72,10 @@ public class BitnetErrorFactory {
 
     public BitnetRequestForbiddenException getBitnetRequestForbiddenException(Response response) {
         String responseBody = responseInterrogator.getResponseBody(response);
+        List<String> errorMessages = new ArrayList<>();
+        errorMessages.add("Access to Bitnet Service is forbidden. Check your credentials and permissions for the invoked service.");
         return new BitnetRequestForbiddenException(
-                responseInterrogator.getErrorMessages(responseBody),
+                errorMessages,
                 responseInterrogator.getCorrelationId(responseBody),
                 responseInterrogator.getBody(responseBody));
     }
