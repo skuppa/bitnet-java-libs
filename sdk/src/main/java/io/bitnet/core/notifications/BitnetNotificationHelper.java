@@ -27,11 +27,16 @@ public class BitnetNotificationHelper {
     private final Challenge challenge = new Challenge("", Arrays.asList("date", "digest"), Arrays.asList(Algorithm.HMAC_SHA256));
     private final List<HmacKey> keys = new ArrayList<>();
     private final ObjectMapper mapper = new ObjectMapper();
+    private Long skew = BitnetVerifier.DEFAULT_SKEW;
 
     public BitnetNotificationHelper(NotificationSubscription... subscriptions) {
         for (NotificationSubscription subscription : subscriptions) {
             this.keys.add(new HmacKey(subscription.getKeyId(), subscription.getSecret()));
         }
+    }
+
+    public void setSkew(Long skew) {
+        this.skew = skew;
     }
 
     /**
@@ -205,7 +210,7 @@ public class BitnetNotificationHelper {
 
     private BitnetVerifier verifier() {
         return new BitnetVerifier(
-                new DefaultKeychain(keys), Constants.DEFAULT_KEY_IDENTIFIER, -1L);
+                new DefaultKeychain(keys), Constants.DEFAULT_KEY_IDENTIFIER, skew);
     }
 
 

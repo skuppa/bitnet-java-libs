@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableMap;
 import io.bitnet.core.notifications.BitnetNotificationHelper;
 import io.bitnet.notifications.model.InvoiceNotification;
 import io.bitnet.notifications.model.Notification;
-
 import io.bitnet.notifications.model.NotificationEventType;
 import io.bitnet.notifications.model.OrderNotification;
 import org.junit.Before;
@@ -36,6 +35,8 @@ public class NotificationHelperTest {
         notificationHelper = Bitnet.notificationHelper(
                 orderSubscriptionCredentials("dd8a326a-d28e-4e26-99cc-4758e858d647", "111111111122222222221111111111222222222211111111112222222222"),
                 invoiceSubscriptionCredentials("1d7fd0e9-4727-4b12-a2a3-c9d7360f0918", "111111111122222222221111111111222222222211111111112222222222"));
+
+        notificationHelper.setSkew(-1L);
     }
 
 
