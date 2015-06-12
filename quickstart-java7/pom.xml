@@ -20,7 +20,7 @@
         <dependency>
             <groupId>io.bitnet</groupId>
             <artifactId>bitnet-java-sdk</artifactId>
-            <version>0.1.35-alpha</version>
+            <version>0.1.36-alpha</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
