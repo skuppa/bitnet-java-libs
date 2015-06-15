@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Provides assistance for verifying and parsing bitnet notifications.
+ * Provides assistance for verifying and parsing Bitnet notifications.
  */
 public class BitnetNotificationHelper {
     private static final Logger LOG = LoggerFactory.getLogger(BitnetNotificationHelper.class);
@@ -35,7 +35,7 @@ public class BitnetNotificationHelper {
     }
 
     /**
-     * Check is notification is valid and has a verified signature.
+     * Check if notification is valid and has a verified signature.
      *
      * @param headers all headers from notification request
      * @param body    body of notification request
@@ -48,7 +48,7 @@ public class BitnetNotificationHelper {
     }
 
     /**
-     * Check is notification is valid and has a verified signature.
+     * Check if notification is valid and has a verified signature.
      *
      * @param headers all headers from notification request
      * @param body    body of notification request

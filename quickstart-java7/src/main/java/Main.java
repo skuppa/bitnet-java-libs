@@ -170,7 +170,7 @@ public class Main {
     }
 
     /**
-     * Create a new invoice.
+     * Create a new refund.
      * See https://github.com/bitnet/bitnet-java-libs#refunds for more details.
      */
     private static Refund createRefund(Invoice createdInvoice, Refund.Instruction instruction) {
