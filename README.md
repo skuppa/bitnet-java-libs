@@ -398,6 +398,7 @@ states.add(Invoice.State.PAID);
  * @param states The list of states you are interested in.
  * @param OFFSET_FROM_ZERO The list of invoices starts with an index of 0.
  *        This number indicates where the list or subset of invoices should start.
+ *        Use this in conjunction with NUMBER_OF_INVOICES to page through the list.
  * @param NUMBER_OF_INVOICES The number of invoices to include in this list.
  * NOTE: This method is overloaded. Choose the appropriate one for your needs.
  */
@@ -798,7 +799,7 @@ gradlew.bat build
 
 ## bitnet-codegen submodule
 Inside the project there is an empty folder bitnet-codegen, this is a git submodule.
- 
+
 If you have access to the bitnet-codegen repository, please run the following:
 
 ```
