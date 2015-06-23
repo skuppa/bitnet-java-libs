@@ -38,7 +38,7 @@ import static spark.Spark.setPort;
  * <p/>
  * The bitnet notification helper is used to verify that notifications are valid and verified to be generated using your subscriptions key id and secret.
  * <p/>
- * Sparkframework http://www.sparkjava.com is used to create a endpoint at http://127.0.0.1:8888/webhook for receiving notifications.
+ * Sparkframework http://www.sparkjava.com is used to create a endpoint at http://127.0.0.1:8888/for receiving notifications.
  * N.B. If you are running this behind a firewall consider using http://ngrok.com to tunnel notifications.
  * The application will wait for 5  minutes before shutting down so that some notifications are relieved.
  * <p/>
@@ -89,7 +89,7 @@ public class Main {
                 refundSubscriptionCredentials(REFUND_NOTIFICATION_SUBSCRIPTION_KEY_ID, REFUND_NOTIFICATION_SUBSCRIPTION_SECRET));
 
         startListeningOnPort(8888);
-        // Registered to receive webhooks on 127.0.0.1:8888/webhook
+        // Registered to receive webhooks on 127.0.0.1:8888/
         startNotificationsWebhook();
 
         try {
@@ -239,7 +239,7 @@ public class Main {
      * Start listening for and handling notifications using spark framework.
      */
     private static void startNotificationsWebhook() {
-        post(new Route("/webhook") {
+        post(new Route("/") {
             @Override
             public Object handle(Request request, Response response) {
                 Map headers = new ImmutableMap.Builder<String, String>()
