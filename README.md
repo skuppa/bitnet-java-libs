@@ -137,7 +137,7 @@ For example:
  */
 PayerCreate newPayer = new PayerCreate()
                 .withAccountId(YOUR_BITNET_ACCOUNT_ID)
-                .withEmail("thePayersEmailAddress@email.com")
+                .withEmail("thePayersEmailAddress@email.com");
 ```
 
 or an example with address, reference and refund payment address:
