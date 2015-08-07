@@ -125,6 +125,7 @@ public class Requested {
     public static enum Currency {
 
         AED("AED"),
+        ARS("ARS"),
         AUD("AUD"),
         BBD("BBD"),
         BDT("BDT"),
@@ -162,6 +163,7 @@ public class Requested {
         LTL("LTL"),
         MVR("MVR"),
         MXN("MXN"),
+        MYR("MYR"),
         NIO("NIO"),
         NOK("NOK"),
         NZD("NZD"),
@@ -180,7 +182,9 @@ public class Requested {
         SGD("SGD"),
         THB("THB"),
         TRY("TRY"),
+        TWD("TWD"),
         USD("USD"),
+        VND("VND"),
         ZAR("ZAR");
         private final String value;
         private static Map<String, Requested.Currency> constants = new HashMap<String, Requested.Currency>();

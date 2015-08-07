@@ -47,6 +47,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
     "channelIdentifier",
     "items",
     "shipping",
+    "isRiskEnabled",
     "createdAt",
     "modifiedAt"
 })
@@ -154,6 +155,8 @@ public class Order {
     @JsonProperty("shipping")
     @Valid
     private Shipping shipping;
+    @JsonProperty("isRiskEnabled")
+    private Boolean isRiskEnabled = false;
     /**
      * 
      * (Required)
@@ -582,6 +585,31 @@ public class Order {
 
     /**
      * 
+     * @return
+     *     The isRiskEnabled
+     */
+    @JsonProperty("isRiskEnabled")
+    public Boolean getIsRiskEnabled() {
+        return isRiskEnabled;
+    }
+
+    /**
+     * 
+     * @param isRiskEnabled
+     *     The isRiskEnabled
+     */
+    @JsonProperty("isRiskEnabled")
+    public void setIsRiskEnabled(Boolean isRiskEnabled) {
+        this.isRiskEnabled = isRiskEnabled;
+    }
+
+    public Order withIsRiskEnabled(Boolean isRiskEnabled) {
+        this.isRiskEnabled = isRiskEnabled;
+        return this;
+    }
+
+    /**
+     * 
      * (Required)
      * 
      * @return
@@ -651,7 +679,7 @@ public class Order {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(accountId).append(totalAmount).append(payerId).append(state).append(currency).append(reference).append(integrationId).append(desc).append(amount).append(taxAmount).append(shippingAmount).append(channelIdentifier).append(items).append(shipping).append(createdAt).append(modifiedAt).append(additionalProperties).toHashCode();
+        return new HashCodeBuilder().append(id).append(accountId).append(totalAmount).append(payerId).append(state).append(currency).append(reference).append(integrationId).append(desc).append(amount).append(taxAmount).append(shippingAmount).append(channelIdentifier).append(items).append(shipping).append(isRiskEnabled).append(createdAt).append(modifiedAt).append(additionalProperties).toHashCode();
     }
 
     @Override
@@ -663,7 +691,7 @@ public class Order {
             return false;
         }
         Order rhs = ((Order) other);
-        return new EqualsBuilder().append(id, rhs.id).append(accountId, rhs.accountId).append(totalAmount, rhs.totalAmount).append(payerId, rhs.payerId).append(state, rhs.state).append(currency, rhs.currency).append(reference, rhs.reference).append(integrationId, rhs.integrationId).append(desc, rhs.desc).append(amount, rhs.amount).append(taxAmount, rhs.taxAmount).append(shippingAmount, rhs.shippingAmount).append(channelIdentifier, rhs.channelIdentifier).append(items, rhs.items).append(shipping, rhs.shipping).append(createdAt, rhs.createdAt).append(modifiedAt, rhs.modifiedAt).append(additionalProperties, rhs.additionalProperties).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).append(accountId, rhs.accountId).append(totalAmount, rhs.totalAmount).append(payerId, rhs.payerId).append(state, rhs.state).append(currency, rhs.currency).append(reference, rhs.reference).append(integrationId, rhs.integrationId).append(desc, rhs.desc).append(amount, rhs.amount).append(taxAmount, rhs.taxAmount).append(shippingAmount, rhs.shippingAmount).append(channelIdentifier, rhs.channelIdentifier).append(items, rhs.items).append(shipping, rhs.shipping).append(isRiskEnabled, rhs.isRiskEnabled).append(createdAt, rhs.createdAt).append(modifiedAt, rhs.modifiedAt).append(additionalProperties, rhs.additionalProperties).isEquals();
     }
 
     @Generated("org.jsonschema2pojo")
@@ -836,6 +864,6 @@ public class Order {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("id", id).append("accountId", accountId).append("totalAmount", totalAmount).append("payerId", payerId).append("state", state).append("currency", currency).append("reference", reference).append("integrationId", integrationId).append("desc", desc).append("amount", amount).append("taxAmount", taxAmount).append("shippingAmount", shippingAmount).append("channelIdentifier", channelIdentifier).append("items", items).append("shipping", shipping).append("createdAt", createdAt).append("modifiedAt", modifiedAt).append("additionalProperties", additionalProperties).toString();
+        return new ToStringBuilder(this).append("id", id).append("accountId", accountId).append("totalAmount", totalAmount).append("payerId", payerId).append("state", state).append("currency", currency).append("reference", reference).append("integrationId", integrationId).append("desc", desc).append("amount", amount).append("taxAmount", taxAmount).append("shippingAmount", shippingAmount).append("channelIdentifier", channelIdentifier).append("items", items).append("shipping", shipping).append("isRiskEnabled", isRiskEnabled).append("createdAt", createdAt).append("modifiedAt", modifiedAt).append("additionalProperties", additionalProperties).toString();
     }
 }
