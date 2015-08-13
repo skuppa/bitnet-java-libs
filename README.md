@@ -808,7 +808,18 @@ git submodule init
 git submodule update
 ```
 
-To update to the lastest version of bitnet-codegen run the following and commit the updated reference:
+## integrationTest submodule
+Inside the project there is an empty folder sdk/src/integrationTest, this is a git submodule.
+
+If you have access to the integrationTest repository, please run the following:
+
+```
+cd sdk/src/integrationTest
+git submodule init
+git submodule update
+```
+
+To update to the lastest version of bitnet-codegen and integrationTest run the following and commit the updated reference:
 
 ```
 git submodule foreach git pull origin master
