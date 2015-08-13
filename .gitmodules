@@ -1,3 +1,6 @@
 [submodule "bitnet-codegen"]
 	path = bitnet-codegen
 	url = git@github.com:bitnet/bitnet-codegen.git
+[submodule "sdk/src/integrationTest"]
+	path = sdk/src/integrationTest
+	url = git@github.com:bitnet/bitnet-java-libs-integration-test.git
