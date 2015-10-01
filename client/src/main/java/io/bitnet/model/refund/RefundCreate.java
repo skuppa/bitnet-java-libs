@@ -54,7 +54,7 @@ public class RefundCreate {
      * 
      */
     @JsonProperty("reference")
-    @Size(max = 50)
+    @Size(max = 200)
     private String reference;
     /**
      * The type of Refund
