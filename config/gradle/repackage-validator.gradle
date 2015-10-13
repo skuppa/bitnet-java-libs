@@ -1,0 +1,42 @@
+apply plugin: 'net.vrallev.jarjar'
+
+jarjar {
+    jarJarFile '../sdk/tools/jarjar-1.4.jar'
+
+    rules = [
+            'rule org.hibernate.validator.** io.bitnet.ext.org.hibernate.validator.@1'
+    ]
+
+    //srcExcludes = ['META-INF/**']
+
+    outputName 'ext-hibernate-validator-5.2.2.jar'
+
+    outputDir 'libs'
+
+    ignoreJarJarResult false
+}
+
+dependencies {
+    jarjar "org.hibernate:hibernate-validator:5.2.2.Final"
+}
+
+task updateValidatorProvider(type: Jar) {
+    from zipTree("../sdk/libs/ext-hibernate-validator-5.2.2.jar")
+
+    destinationDir file("../sdk/libs")
+    archiveName "ext-hibernate-validator-5.2.2.Final.jar"
+
+    from(file("../sdk/tools/javax.validation.spi.ValidationProvider")) {
+        into "META-INF/services"
+    }
+
+    doLast {
+        delete file("../sdk/libs/ext-hibernate-validator-5.2.2.jar")
+    }
+}
+
+afterEvaluate {
+    compileJava.dependsOn updateValidatorProvider
+}
+
+

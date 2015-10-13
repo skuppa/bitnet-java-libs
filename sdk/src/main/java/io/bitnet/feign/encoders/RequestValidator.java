@@ -8,8 +8,8 @@ import feign.codec.EncodeException;
 import feign.codec.Encoder;
 import io.bitnet.Blockchain;
 import io.bitnet.core.exceptions.BitnetValidationException;
+import io.bitnet.ext.org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorFactoryImpl;
 import io.bitnet.validation.PaymentAddressValidator;
-import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorFactoryImpl;
 
 import javax.validation.*;
 import java.lang.reflect.Type;
