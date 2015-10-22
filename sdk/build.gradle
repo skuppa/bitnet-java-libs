@@ -1,6 +1,5 @@
 apply from: '../config/gradle/integration-test.gradle'
 apply from: '../config/gradle/bintray-publish.gradle'
-apply from: '../config/gradle/repackage-validator.gradle'
 
 dependencies {
     compile project(':client')
@@ -14,8 +13,7 @@ dependencies {
     compile 'javax.el:javax.el-api:3.0.1-b04'
     compile 'net.adamcin.httpsig:httpsig-api:1.2.0'
     compile 'net.adamcin.httpsig:httpsig-hmac:1.2.0'
-
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'org.hibernate:hibernate-validator:4.1.0.Final'
 
     testCompile "junit:junit:4.12"
     testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
@@ -27,3 +25,17 @@ dependencies {
 }
 
 projectReport.dependsOn testReport, jacocoTestReport
+
+task repackageWithPom(type: Jar, dependsOn: ['assemble', 'generatePomFileForMavenJavaPublication']) {
+    from zipTree("${project.buildDir.path}/libs/bitnet-java-sdk-1.0.1.Mido.jar")
+
+    destinationDir file("${project.buildDir.path}/libs")
+    archiveName "bitnet-java-sdk-1.0.1.Mido.WithPom.jar"
+
+    from(file("${project.buildDir.path}/publications/mavenJava/pom-default.xml")) {
+        into("META-INF/maven/io.bitnet/bitnet-java-sdk")
+        rename {
+            String filename -> filename.replace('pom-default.xml', 'pom.xml')
+        }
+    }
+}

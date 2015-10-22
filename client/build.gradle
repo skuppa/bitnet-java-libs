@@ -9,7 +9,7 @@ apply from: '../config/gradle/bintray-publish.gradle'
 dependencies {
     compile 'org.bitcoinj:bitcoinj-core:0.12.3'
     compile 'org.modelmapper:modelmapper:0.7.4'
-    compile 'javax.validation:validation-api:1.1.0.CR2'
+    compile 'javax.validation:validation-api:1.0.0.GA'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
     compile 'org.apache.commons:commons-lang3:3.3.2'
 
@@ -23,5 +23,18 @@ pmdMain {
     exclude "**/io/bitnet/notifications/model/**"
 }
 
+task repackageWithPom(type: Jar, dependsOn: ['assemble', 'generatePomFileForMavenJavaPublication']) {
+    from zipTree("${project.buildDir.path}/libs/bitnet-java-client-1.0.1.Mido.jar")
+
+    destinationDir file("${project.buildDir.path}/libs")
+    archiveName "bitnet-java-client-1.0.1.Mido.WithPom.jar"
+
+    from(file("${project.buildDir.path}/publications/mavenJava/pom-default.xml")) {
+        into("META-INF/maven/io.bitnet/bitnet-java-client")
+        rename {
+            String filename -> filename.replace('pom-default.xml', 'pom.xml')
+        }
+    }
+}
 
 

@@ -8,10 +8,15 @@ import feign.codec.EncodeException;
 import feign.codec.Encoder;
 import io.bitnet.Blockchain;
 import io.bitnet.core.exceptions.BitnetValidationException;
-import io.bitnet.ext.org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorFactoryImpl;
 import io.bitnet.validation.PaymentAddressValidator;
+import org.hibernate.validator.engine.ConstraintValidatorFactoryImpl;
 
-import javax.validation.*;
+import javax.validation.Configuration;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorFactory;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -35,10 +40,6 @@ public class RequestValidator implements Encoder {
                             return (T) new PaymentAddressValidator(blockchain);
                         }
                         return new ConstraintValidatorFactoryImpl().getInstance(key);
-                    }
-
-                    @Override
-                    public void releaseInstance(ConstraintValidator<?, ?> instance) {
                     }
                 }).buildValidatorFactory();
     }
